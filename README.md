@@ -1,1 +1,1 @@
-# codenames-server
+# Codenames Server
