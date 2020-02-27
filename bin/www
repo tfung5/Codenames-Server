@@ -27,15 +27,29 @@ const server = http.createServer(app);
 const io = require("socket.io").listen(server);
 
 /**
+ * Receive and emit action types and payloads
+ */
+receiveAndEmit = (socket, type) => {
+  socket.on(type, payload => {
+    io.emit(type, payload);
+  });
+};
+
+/**
+ * Initialize action types
+ */
+const CHAT_MESSAGE = "chat message";
+const UPDATE_BOARD = "UPDATE_BOARD";
+
+/**
  * Start socket server with `on` method.
- * Start using `emit`
+ * Listen for action types
+ * Emit action payload
  */
 io.on("connection", socket => {
   console.log("a user connected :D");
-  socket.on("chat message", msg => {
-    console.log(msg);
-    io.emit("chat message", msg);
-  });
+  receiveAndEmit(socket, CHAT_MESSAGE);
+  receiveAndEmit(socket, UPDATE_BOARD);
 });
 
 /**
