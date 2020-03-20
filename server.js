@@ -237,6 +237,7 @@ const generateBoard = () => {
 const CHAT_MESSAGE = "chat message";
 const UPDATE_BOARD = "UPDATE_BOARD";
 const FETCH_BOARD = "FETCH_BOARD";
+const GENERATE_BOARD = "GENERATE_BOARD";
 
 /**
  * Start socket server with `on` method.
@@ -248,6 +249,12 @@ io.on("connection", socket => {
 
   // Handle FETCH_BOARD
   socket.on(FETCH_BOARD, () => {
+    io.emit(UPDATE_BOARD, board);
+  });
+
+  // Handle GENERATE_BOARD
+  socket.on(GENERATE_BOARD, () => {
+    board = generateBoard();
     io.emit(UPDATE_BOARD, board);
   });
 
