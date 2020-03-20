@@ -1,3 +1,7 @@
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
 module.exports = (error, port) => {
   if (error.syscall !== "listen") {
     throw error;
