@@ -116,6 +116,54 @@ selectStartTeam = () => {
 };
 
 /**
+ * Randomize the colors for a given board.
+ * @param {Board} A board whose colors need to be randomized.
+ * @return {Board} A board whose colors have been randomized.
+ */
+randomizeColorOfCards = board => {
+  console.log("Color selection starting.");
+
+  let numRedCards = startingTeam === RED ? 9 : 8;
+  let numBlueCards = startingTeam === RED ? 8 : 9;
+  let numBlackCards = 1;
+  var row, col;
+
+  //RED CARDS
+  while (numRedCards > 0) {
+    row = Math.floor(Math.random() * 5);
+    col = Math.floor(Math.random() * 5);
+    if (board[row][col].color === GRAY) {
+      board[row][col].color = RED;
+      numRedCards--;
+    }
+  }
+
+  //BLUE CARDS
+  while (numBlueCards > 0) {
+    row = Math.floor(Math.random() * 5);
+    col = Math.floor(Math.random() * 5);
+    if (board[row][col].color === GRAY) {
+      board[row][col].color = BLUE;
+      numBlueCards--;
+    }
+  }
+
+  //BLACK CARD
+  while (numBlackCards > 0) {
+    row = Math.floor(Math.random() * 5);
+    col = Math.floor(Math.random() * 5);
+    if (board[row][col].color === GRAY) {
+      board[row][col].color = BLACK;
+      numBlackCards--;
+    }
+  }
+
+  console.log("Color selection completed.");
+
+  return board;
+};
+
+/**
  * Set up board
  */
 createBoardFromWordList = () => {
