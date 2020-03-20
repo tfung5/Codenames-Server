@@ -97,7 +97,6 @@ let wordList = [
   "Death",
   "Stock"
 ];
-let startingTeam = RED; // Set to RED by default
 
 const RED = "RED";
 const BLUE = "BLUE";
@@ -105,17 +104,6 @@ const BLACK = "BLACK";
 const GRAY = "GRAY";
 const CHECKED = "CHECKED";
 const UNCHECKED = "UNCHECKED";
-
-/**
- * Select the team that starts first.
- * There should be a 50/50 chance
- * @return {string} The team that starts first.
- */
-selectStartTeam = () => {
-  const randomValue = Math.floor(Math.random() * 2) + 1;
-  const result = randomValue === 1 ? RED : BLUE;
-  return result;
-};
 
 /**
  * Create a board.
@@ -146,11 +134,23 @@ createBoard = () => {
 };
 
 /**
+ * Select the team that starts first.
+ * There should be a 50/50 chance
+ * @return {string} The team that starts first.
+ */
+selectStartTeam = () => {
+  const randomValue = Math.floor(Math.random() * 2) + 1;
+  const result = randomValue === 1 ? RED : BLUE;
+  return result;
+};
+
+/**
  * Randomize the colors for a given board.
  * @param {Board} A board whose colors need to be randomized.
+ * @param {string} The starting team.
  * @return {Board} A board whose colors have been randomized.
  */
-randomizeColorOfCards = board => {
+randomizeColorOfCards = (board, startingTeam) => {
   console.log("Color selection starting.");
 
   let numRedCards = startingTeam === RED ? 9 : 8;
@@ -215,6 +215,18 @@ populateBoardWithWords = board => {
 };
 
 /**
+ * Generate the resulting board
+ * @return {Board} A board that has all the colors selected and all the words populated.
+ */
+generateBoard = () => {
+  let board = createBoard();
+  let startingTeam = selectStartTeam();
+  board = randomizeColorOfCards(board, startingTeam);
+  board = populateBoardWithWords(board);
+  return board;
+};
+
+/**
  * Initialize action types
  */
 const CHAT_MESSAGE = "chat message";
@@ -251,7 +263,7 @@ io.on("connection", socket => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  populateBoardWithWords();
+  board = generateBoard();
 });
 server.on("Error", err => onError(err, port));
 server.on("Listening", () => onListening(server));
