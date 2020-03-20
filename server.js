@@ -166,30 +166,24 @@ randomizeColorOfCards = board => {
 };
 
 /**
- * Set up board
+ * Populate a given board with words
+ * @param {Board} A board that needs to be populated with words.
+ * @return {Board} A board that has been populated with words.
  */
-createBoardFromWordList = () => {
-  console.log("Board creation starting.");
+populateBoardWithWords = board => {
+  console.log("Board word population starting.");
 
-  let tempBoard = [];
   let count = 0;
 
   for (let row = 0; row < 5; ++row) {
-    let currRow = [];
     for (let col = 0; col < 5; ++col) {
-      currRow.push({
-        word: wordList[count++],
-        color: BLUE,
-        status: UNCHECKED,
-        row,
-        col
-      });
+      board[row][col].word = wordList[count++];
     }
-    tempBoard.push(currRow);
   }
 
-  board = tempBoard;
-  console.log("Board creation completed.");
+  console.log("Board word population completed.");
+
+  return board;
 };
 
 /**
@@ -229,7 +223,7 @@ io.on("connection", socket => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  createBoardFromWordList();
+  populateBoardWithWords();
 });
 server.on("Error", err => onError(err, port));
 server.on("Listening", () => onListening(server));
