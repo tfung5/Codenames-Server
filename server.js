@@ -9,6 +9,7 @@ const http = require("http");
 const debug = require("debug")("tutorial:server");
 const normalizePort = require("./utils/normalizePort");
 const onError = require("./utils/onError");
+const onListening = require("./utils/onListening");
 
 /**
  * Get port from environment and store in Express.
@@ -171,16 +172,6 @@ server.listen(port, () => {
   createBoardFromWordList();
 });
 server.on("Error", err => onError(err, port));
-server.on("Listening", onListening);
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-}
+server.on("Listening", () => onListening(server));
 
 module.exports = server;
