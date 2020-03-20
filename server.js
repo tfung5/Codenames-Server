@@ -247,8 +247,8 @@ io.on("connection", socket => {
   console.log("A user connected :D");
 
   // Handle FETCH_BOARD
-  socket.on(FETCH_BOARD, payload => {
-    io.emit(FETCH_BOARD, payload);
+  socket.on(FETCH_BOARD, () => {
+    io.emit(UPDATE_BOARD, board);
   });
 
   // Handle CHAT_MESSAGE
