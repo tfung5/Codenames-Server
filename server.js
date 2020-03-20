@@ -109,7 +109,7 @@ const UNCHECKED = "UNCHECKED";
  * Create a board.
  * @return {Board} A board.
  */
-createBoard = () => {
+const createBoard = () => {
   console.log("Board creation starting.");
 
   let board = [];
@@ -138,7 +138,7 @@ createBoard = () => {
  * There should be a 50/50 chance
  * @return {string} The team that starts first.
  */
-selectStartTeam = () => {
+const selectStartTeam = () => {
   const randomValue = Math.floor(Math.random() * 2) + 1;
   const result = randomValue === 1 ? RED : BLUE;
   return result;
@@ -150,7 +150,7 @@ selectStartTeam = () => {
  * @param {string} The starting team.
  * @return {Board} A board whose colors have been randomized.
  */
-randomizeColorOfCards = (board, startingTeam) => {
+const randomizeColorOfCards = (board, startingTeam) => {
   console.log("Color selection starting.");
 
   let numRedCards = startingTeam === RED ? 9 : 8;
@@ -198,7 +198,7 @@ randomizeColorOfCards = (board, startingTeam) => {
  * @param {Board} A board that needs to be populated with words.
  * @return {Board} A board that has been populated with words.
  */
-populateBoardWithWords = board => {
+const populateBoardWithWords = board => {
   console.log("Board word population starting.");
 
   let count = 0;
@@ -218,7 +218,7 @@ populateBoardWithWords = board => {
  * Generate the resulting board
  * @return {Board} A board that has all the colors selected and all the words populated.
  */
-generateBoard = () => {
+const generateBoard = () => {
   let board = createBoard();
   let startingTeam = selectStartTeam();
   board = randomizeColorOfCards(board, startingTeam);
