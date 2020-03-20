@@ -119,7 +119,7 @@ const createBoard = () => {
     for (let col = 0; col < 5; ++col) {
       currRow.push({
         word: null, // To be populated by populateBoardWithWords
-        color: null, // To be selected by randomizeColorOfCards
+        color: GRAY, // GRAY by default. To be selected by randomizeColorOfCards
         status: UNCHECKED,
         row,
         col
