@@ -219,10 +219,15 @@ const populateBoardWithWords = board => {
  * @return {Board} A board that has all the colors selected and all the words populated.
  */
 const generateBoard = () => {
+  console.log("Board generation starting.");
+
   let board = createBoard();
   let startingTeam = selectStartTeam();
   board = randomizeColorOfCards(board, startingTeam);
   board = populateBoardWithWords(board);
+
+  console.log("Board generation completed.");
+
   return board;
 };
 
