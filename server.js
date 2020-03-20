@@ -118,6 +118,34 @@ selectStartTeam = () => {
 };
 
 /**
+ * Create a board.
+ * @return {Board} A board.
+ */
+createBoard = () => {
+  console.log("Board creation starting.");
+
+  let board = [];
+
+  for (let row = 0; row < 5; ++row) {
+    let currRow = [];
+    for (let col = 0; col < 5; ++col) {
+      currRow.push({
+        word: null, // To be populated by populateBoardWithWords
+        color: null, // To be selected by randomizeColorOfCards
+        status: UNCHECKED,
+        row,
+        col
+      });
+    }
+    board.push(currRow);
+  }
+
+  console.log("Board creation completed.");
+
+  return board;
+};
+
+/**
  * Randomize the colors for a given board.
  * @param {Board} A board whose colors need to be randomized.
  * @return {Board} A board whose colors have been randomized.
