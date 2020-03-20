@@ -109,10 +109,12 @@ const UNCHECKED = "UNCHECKED";
 /**
  * Select the team that starts first.
  * There should be a 50/50 chance
+ * @return {string} The team that starts first.
  */
 selectStartTeam = () => {
   const randomValue = Math.floor(Math.random() * 2) + 1;
-  startingTeam = randomValue === 1 ? RED : BLUE;
+  const result = randomValue === 1 ? RED : BLUE;
+  return result;
 };
 
 /**
