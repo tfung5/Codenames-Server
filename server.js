@@ -97,6 +97,7 @@ let wordList = [
   "Death",
   "Stock"
 ];
+let startingTeam = RED; // Set to RED by default
 
 const RED = "RED";
 const BLUE = "BLUE";
@@ -104,6 +105,15 @@ const BLACK = "BLACK";
 const GRAY = "GRAY";
 const CHECKED = "CHECKED";
 const UNCHECKED = "UNCHECKED";
+
+/**
+ * Select the team that starts first.
+ * There should be a 50/50 chance
+ */
+selectStartTeam = () => {
+  const randomValue = Math.floor(Math.random() * 2) + 1;
+  startingTeam = randomValue === 1 ? RED : BLUE;
+};
 
 /**
  * Set up board
