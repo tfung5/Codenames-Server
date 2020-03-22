@@ -1,3 +1,5 @@
+const clonedeep = require("lodash.clonedeep");
+
 const RED = "RED";
 const BLUE = "BLUE";
 const BLACK = "BLACK";
@@ -141,6 +143,8 @@ class Board {
   assignColors = board => {
     console.log("Color selection starting.");
 
+    let boardCopy = clonedeep(board);
+
     let numRedCards = this.startingTeam === RED ? 9 : 8;
     let numBlueCards = this.startingTeam === RED ? 8 : 9;
     let numBlackCards = 1;
@@ -150,8 +154,8 @@ class Board {
     while (numRedCards > 0) {
       row = Math.floor(Math.random() * 5);
       col = Math.floor(Math.random() * 5);
-      if (board[row][col].color === GRAY) {
-        board[row][col].color = RED;
+      if (boardCopy[row][col].color === GRAY) {
+        boardCopy[row][col].color = RED;
         numRedCards--;
       }
     }
@@ -160,8 +164,8 @@ class Board {
     while (numBlueCards > 0) {
       row = Math.floor(Math.random() * 5);
       col = Math.floor(Math.random() * 5);
-      if (board[row][col].color === GRAY) {
-        board[row][col].color = BLUE;
+      if (boardCopy[row][col].color === GRAY) {
+        boardCopy[row][col].color = BLUE;
         numBlueCards--;
       }
     }
@@ -170,15 +174,15 @@ class Board {
     while (numBlackCards > 0) {
       row = Math.floor(Math.random() * 5);
       col = Math.floor(Math.random() * 5);
-      if (board[row][col].color === GRAY) {
-        board[row][col].color = BLACK;
+      if (boardCopy[row][col].color === GRAY) {
+        boardCopy[row][col].color = BLACK;
         numBlackCards--;
       }
     }
 
     console.log("Color selection completed.");
 
-    return board;
+    return boardCopy;
   };
 
   /**
@@ -189,17 +193,19 @@ class Board {
   assignWords = board => {
     console.log("Board word population starting.");
 
+    let boardCopy = clonedeep(board);
+
     let count = 0;
 
     for (let row = 0; row < 5; ++row) {
       for (let col = 0; col < 5; ++col) {
-        board[row][col].word = wordList[count++];
+        boardCopy[row][col].word = wordList[count++];
       }
     }
 
     console.log("Board word population completed.");
 
-    return board;
+    return boardCopy;
   };
 
   /**
@@ -225,15 +231,15 @@ class Board {
   };
 
   generateFieldOperativeBoard = () => {
-    let copyBoard = this.spymasterBoard;
+    let boardCopy = clonedeep(this.spymasterBoard);
 
-    for (let row of copyBoard) {
+    for (let row of boardCopy) {
       for (let card of row) {
         card.color = null;
       }
     }
 
-    this.fieldOperativeBoard = copyBoard;
+    this.fieldOperativeBoard = boardCopy;
   };
 
   /**
