@@ -236,6 +236,7 @@ class Board {
     for (let row of boardCopy) {
       for (let card of row) {
         card.color = null;
+        card.status = UNCHECKED;
       }
     }
 
