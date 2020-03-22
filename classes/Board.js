@@ -107,7 +107,7 @@ class Board {
         currRow.push({
           word: null, // Word to be assigned.
           color: GRAY, // Color to be assigned. GRAY by default.
-          status: CHOSEN,
+          state: CHOSEN,
           row,
           col
         });
@@ -236,7 +236,7 @@ class Board {
     for (let row of boardCopy) {
       for (let card of row) {
         card.color = null;
-        card.status = UNCHOSEN;
+        card.state = UNCHOSEN;
       }
     }
 
@@ -275,8 +275,8 @@ class Board {
    * @param {int} The column of a given position
    */
   markChosen = (row, col) => {
-    this.fieldOperativeBoard[row][col].status = CHOSEN;
-    this.spymasterBoard[row][col].status = CHOSEN;
+    this.fieldOperativeBoard[row][col].state = CHOSEN;
+    this.spymasterBoard[row][col].state = CHOSEN;
   };
 
   /**
