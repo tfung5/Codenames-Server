@@ -141,7 +141,7 @@ class Board {
    * @return {Board} A board whose colors have been assigned.
    */
   assignColors = board => {
-    console.log("Color selection starting.");
+    console.log("Color assignment starting.");
 
     let boardCopy = clonedeep(board);
 
@@ -180,7 +180,7 @@ class Board {
       }
     }
 
-    console.log("Color selection completed.");
+    console.log("Color assignment completed.");
 
     return boardCopy;
   };
@@ -191,7 +191,7 @@ class Board {
    * @return {Board} A board whose words have been assigned.
    */
   assignWords = board => {
-    console.log("Board word population starting.");
+    console.log("Word assignment starting.");
 
     let boardCopy = clonedeep(board);
 
@@ -203,7 +203,7 @@ class Board {
       }
     }
 
-    console.log("Board word population completed.");
+    console.log("Word assignment completed.");
 
     return boardCopy;
   };
