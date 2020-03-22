@@ -4,8 +4,8 @@ const RED = "RED";
 const BLUE = "BLUE";
 const BLACK = "BLACK";
 const GRAY = "GRAY";
-const CHECKED = "CHECKED";
-const UNCHECKED = "UNCHECKED";
+const CHOSEN = "CHOSEN";
+const UNCHOSEN = "UNCHOSEN";
 
 const SPYMASTER = "SPYMASTER";
 const FIELD_OPERATIVE = "FIELD_OPERATIVE";
@@ -107,7 +107,7 @@ class Board {
         currRow.push({
           word: null, // Word to be assigned.
           color: GRAY, // Color to be assigned. GRAY by default.
-          status: CHECKED,
+          status: CHOSEN,
           row,
           col
         });
@@ -236,7 +236,7 @@ class Board {
     for (let row of boardCopy) {
       for (let card of row) {
         card.color = null;
-        card.status = UNCHECKED;
+        card.status = UNCHOSEN;
       }
     }
 
@@ -263,20 +263,20 @@ class Board {
    * @param {int} The column of a given position
    */
   chooseCard = (row, col) => {
-    this.markChecked(row, col);
+    this.markChosen(row, col);
     this.revealColor(row, col);
     // TODO: this.updateBoardCounters, such as the number of cards left for each team, the number of guesses remaining.
     // TODO: this.checkWinConditions.
   };
 
   /**
-   * Mark the card at a given position as checked
+   * Mark the card at a given position as chosen
    * @param {int} The row of a given position
    * @param {int} The column of a given position
    */
-  markChecked = (row, col) => {
-    this.fieldOperativeBoard[row][col].status = CHECKED;
-    this.spymasterBoard[row][col].status = CHECKED;
+  markChosen = (row, col) => {
+    this.fieldOperativeBoard[row][col].status = CHOSEN;
+    this.spymasterBoard[row][col].status = CHOSEN;
   };
 
   /**

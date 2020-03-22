@@ -45,8 +45,8 @@ const RED = "RED";
 const BLUE = "BLUE";
 const BLACK = "BLACK";
 const GRAY = "GRAY";
-const CHECKED = "CHECKED";
-const UNCHECKED = "UNCHECKED";
+const CHOSEN = "CHOSEN";
+const UNCHOSEN = "UNCHOSEN";
 
 const SPYMASTER = "SPYMASTER";
 const FIELD_OPERATIVE = "FIELD_OPERATIVE";
