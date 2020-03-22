@@ -248,6 +248,16 @@ class Board {
   };
 
   /**
+   * A player chooses a card to flip over
+   */
+  chooseCard = (row, col) => {
+    this.markChecked(row, col);
+    this.revealColor(row, col);
+    // TODO: this.updateBoardCounters, such as the number of cards left for each team, the number of guesses remaining.
+    // TODO: this.checkWinConditions.
+  };
+
+  /**
    * Mark the card at a given position as checked
    */
   markChecked = (row, col) => {
