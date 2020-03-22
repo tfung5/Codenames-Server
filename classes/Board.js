@@ -74,9 +74,21 @@ const wordList = [
 
 class Board {
   constructor() {
-    this.board = this.createBoard();
-    this.startingTeam = this.selectStartTeam();
+    this.resetBoard();
   }
+
+  /**
+   * Resets the board
+   */
+  resetBoard = () => {
+    console.log("Board reset starting.");
+
+    this.spymasterBoard = this.createBoard();
+    this.fieldOperativeBoard = [];
+    this.startingTeam = this.selectStartingTeam();
+
+    console.log("Board reset completed.");
+  };
 
   /**
    * Create a board.
@@ -91,9 +103,9 @@ class Board {
       let currRow = [];
       for (let col = 0; col < 5; ++col) {
         currRow.push({
-          word: null, // To be populated by populateBoardWithWords
-          color: GRAY, // GRAY by default. To be selected by randomizeColorOfCards
-          status: UNCHECKED,
+          word: null, // Word to be assigned.
+          color: GRAY, // Color to be assigned. GRAY by default.
+          status: CHECKED,
           row,
           col
         });
@@ -111,7 +123,7 @@ class Board {
    * There should be a 50/50 chance of RED or BLUE.
    * @return {string} The team that starts first.
    */
-  selectStartTeam = () => {
+  selectStartingTeam = () => {
     const randomValue = Math.floor(Math.random() * 2) + 1;
     const result = randomValue === 1 ? RED : BLUE;
     return result;
@@ -123,11 +135,12 @@ class Board {
    *    9 or 8 BLUE cards (9 if starting team, 8 if not)
    *    7 GRAY cards
    *    1 BLACK card
+   * @param {Board} A board whose colors need to be assigned.
+   * @return {Board} A board whose colors have been assigned.
    */
-  assignColors = () => {
+  assignColors = board => {
     console.log("Color selection starting.");
 
-    let board = this.board;
     let numRedCards = this.startingTeam === RED ? 9 : 8;
     let numBlueCards = this.startingTeam === RED ? 8 : 9;
     let numBlackCards = 1;
@@ -165,16 +178,17 @@ class Board {
 
     console.log("Color selection completed.");
 
-    this.board = board;
+    return board;
   };
 
   /**
    * Assign a random word to each card.
+   * @param {Board} A board whose words need to be assigned.
+   * @return {Board} A board whose words have been assigned.
    */
-  assignWords = () => {
+  assignWords = board => {
     console.log("Board word population starting.");
 
-    let board = this.board;
     let count = 0;
 
     for (let row = 0; row < 5; ++row) {
@@ -185,22 +199,52 @@ class Board {
 
     console.log("Board word population completed.");
 
-    this.board = board;
+    return board;
   };
 
   /**
-   * Generate a random board
+   * Generate a random board by creating the spymaster board first, assigning it random colors and words, and then obscuring the colors to create the field operative board.
    */
   generateBoard = () => {
     console.log("Board generation starting.");
 
-    this.startingTeam = selectStartTeam();
-    this.assignColors();
-    this.assignWords();
+    this.resetBoard();
+    this.generateSpymasterBoard();
+    this.generateFieldOperativeBoard();
 
     console.log("Board generation completed.");
+  };
 
-    return board;
+  generateSpymasterBoard = () => {
+    this.spymasterBoard = this.createBoard();
+    this.spymasterBoard = this.assignColors(this.spymasterBoard);
+    this.spymasterBoard = this.assignWords(this.spymasterBoard);
+  };
+
+  generateFieldOperativeBoard = () => {
+    // TODO: Copy this.spymasterBoard while deleting the color key from every card, or setting it to null
+  };
+
+  /**
+   * Get the current Board depending on player role
+   * If spymaster, return the board with all information.
+   * If field operative, return the board with information obscured.
+   * @return {Board} The current board
+   */
+  getBoard = role => {
+    if (role === SPYMASTER) {
+      return this.spymasterBoard;
+    } else {
+      return this.fieldOperativeBoard;
+    }
+  };
+
+  /**
+   * Mark the card at a given position as checked
+   */
+  markChecked = (row, col) => {
+    this.fieldOperativeBoard[row][col].status = CHECKED;
+    this.spymasterBoard[row][col].status = CHECKED;
   };
 }
 
