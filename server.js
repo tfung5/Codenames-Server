@@ -12,6 +12,11 @@ const onError = require("./utils/onError");
 const onListening = require("./utils/onListening");
 
 /**
+ * Classes
+ */
+const Player = require("./classes/Player");
+
+/**
  * Get port from environment and store in Express.
  */
 
@@ -104,6 +109,9 @@ const BLACK = "BLACK";
 const GRAY = "GRAY";
 const CHECKED = "CHECKED";
 const UNCHECKED = "UNCHECKED";
+
+const SPYMASTER = "SPYMASTER";
+const FIELD_OPERATIVE = "FIELD_OPERATIVE";
 
 /**
  * Create a board.
