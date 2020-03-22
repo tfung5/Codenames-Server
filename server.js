@@ -58,6 +58,7 @@ const CHAT_MESSAGE = "chat message";
 const UPDATE_BOARD = "UPDATE_BOARD";
 const FETCH_BOARD = "FETCH_BOARD";
 const GENERATE_BOARD = "GENERATE_BOARD";
+const CHOOSE_CARD = "CHOOSE_CARD";
 
 /**
  * Start socket server with `on` method.
@@ -86,6 +87,12 @@ io.on("connection", socket => {
   // Handle UPDATE_BOARD
   socket.on(UPDATE_BOARD, payload => {
     io.emit(UPDATE_BOARD, payload);
+  });
+
+  // Handle CHOOSE_CARD
+  socket.on(CHOOSE_CARD, payload => {
+    board.chooseCard(payload.row, payload.col);
+    io.emit(UPDATE_BOARD, board.getBoard());
   });
 });
 
