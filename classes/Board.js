@@ -222,7 +222,15 @@ class Board {
   };
 
   generateFieldOperativeBoard = () => {
-    // TODO: Copy this.spymasterBoard while deleting the color key from every card, or setting it to null
+    let copyBoard = this.spymasterBoard;
+
+    for (let row of copyBoard) {
+      for (let card of row) {
+        card.color = null;
+      }
+    }
+
+    this.fieldOperativeBoard = copyBoard;
   };
 
   /**
