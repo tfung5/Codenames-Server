@@ -216,9 +216,11 @@ class Board {
   };
 
   generateSpymasterBoard = () => {
-    this.spymasterBoard = this.createBoard();
-    this.spymasterBoard = this.assignColors(this.spymasterBoard);
-    this.spymasterBoard = this.assignWords(this.spymasterBoard);
+    let board = this.createBoard();
+    board = this.assignColors(board);
+    board = this.assignWords(board);
+
+    this.spymasterBoard = board;
   };
 
   generateFieldOperativeBoard = () => {
