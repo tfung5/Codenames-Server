@@ -249,6 +249,8 @@ class Board {
 
   /**
    * A player chooses a card to flip over
+   * @param {int} The row of a given position
+   * @param {int} The column of a given position
    */
   chooseCard = (row, col) => {
     this.markChecked(row, col);
@@ -259,6 +261,8 @@ class Board {
 
   /**
    * Mark the card at a given position as checked
+   * @param {int} The row of a given position
+   * @param {int} The column of a given position
    */
   markChecked = (row, col) => {
     this.fieldOperativeBoard[row][col].status = CHECKED;
@@ -267,6 +271,8 @@ class Board {
 
   /**
    * Reveal the color of the card at a given position
+   * @param {int} The row of a given position
+   * @param {int} The column of a given position
    */
   revealColor = (row, col) => {
     this.fieldOperativeBoard[row][col].color = this.spymasterBoard[row][
