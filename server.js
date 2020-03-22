@@ -41,24 +41,16 @@ const io = require("socket.io").listen(server);
 let players = [];
 let board = new Board();
 
-const RED = "RED";
-const BLUE = "BLUE";
-const BLACK = "BLACK";
-const GRAY = "GRAY";
-const CHOSEN = "CHOSEN";
-const UNCHOSEN = "UNCHOSEN";
-
-const SPYMASTER = "SPYMASTER";
-const FIELD_OPERATIVE = "FIELD_OPERATIVE";
-
 /**
- * Initialize action types
+ * Require action types
  */
-const CHAT_MESSAGE = "chat message";
-const UPDATE_BOARD = "UPDATE_BOARD";
-const FETCH_BOARD = "FETCH_BOARD";
-const GENERATE_BOARD = "GENERATE_BOARD";
-const CHOOSE_CARD = "CHOOSE_CARD";
+const {
+  CHAT_MESSAGE,
+  UPDATE_BOARD,
+  FETCH_BOARD,
+  GENERATE_BOARD,
+  CHOOSE_CARD
+} = require("./constants/Actions");
 
 /**
  * Start socket server with `on` method.

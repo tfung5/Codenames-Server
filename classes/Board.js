@@ -1,14 +1,14 @@
 const clonedeep = require("lodash.clonedeep");
 
-const RED = "RED";
-const BLUE = "BLUE";
-const BLACK = "BLACK";
-const GRAY = "GRAY";
-const CHOSEN = "CHOSEN";
-const UNCHOSEN = "UNCHOSEN";
-
-const SPYMASTER = "SPYMASTER";
-const FIELD_OPERATIVE = "FIELD_OPERATIVE";
+const {
+  RED,
+  BLUE,
+  BLACK,
+  GRAY,
+  CHOSEN,
+  UNCHOSEN
+} = require("../constants/Cards");
+const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
 
 const wordList = [
   "Server",
