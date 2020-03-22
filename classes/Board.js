@@ -254,6 +254,15 @@ class Board {
     this.fieldOperativeBoard[row][col].status = CHECKED;
     this.spymasterBoard[row][col].status = CHECKED;
   };
+
+  /**
+   * Reveal the color of the card at a given position
+   */
+  revealColor = (row, col) => {
+    this.fieldOperativeBoard[row][col].color = this.spymasterBoard[row][
+      col
+    ].color;
+  };
 }
 
 module.exports = Board;
