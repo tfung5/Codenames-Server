@@ -74,18 +74,18 @@ const wordList = [
 
 class Board {
   constructor() {
-    this.resetBoard();
+    this.clearBoard();
   }
 
   /**
-   * Resets the board
+   * Clears the board
    */
-  resetBoard = () => {
+  clearBoard = () => {
     console.log("Board reset starting.");
 
-    this.spymasterBoard = this.createBoard();
+    this.spymasterBoard = [];
     this.fieldOperativeBoard = [];
-    this.startingTeam = this.selectStartingTeam();
+    this.startingTeam = "";
 
     console.log("Board reset completed.");
   };
@@ -121,12 +121,12 @@ class Board {
   /**
    * Select the team that starts first.
    * There should be a 50/50 chance of RED or BLUE.
-   * @return {string} The team that starts first.
    */
   selectStartingTeam = () => {
     const randomValue = Math.floor(Math.random() * 2) + 1;
     const result = randomValue === 1 ? RED : BLUE;
-    return result;
+
+    this.startingTeam = result;
   };
 
   /**
@@ -208,7 +208,8 @@ class Board {
   generateBoard = () => {
     console.log("Board generation starting.");
 
-    this.resetBoard();
+    this.clearBoard();
+    this.selectStartingTeam();
     this.generateSpymasterBoard();
     this.generateFieldOperativeBoard();
 
