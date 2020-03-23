@@ -62,15 +62,27 @@ const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 io.on("connection", socket => {
   console.log("A user connected :D");
 
+  // Create Player object upon entering Lobby screen
+  let player = new Player(socket.id);
+
+  // Join Lobby room
+  socket.join("lobby");
+
+  // When the game is started, SEND_PLAYER_INFO should be received by the server
   // Handle SEND_PLAYER_INFO
   socket.on(SEND_PLAYER_INFO, payload => {
     const { name, team, role } = payload;
 
-    // TODO: Add player to list of players
-    // Ideally, push to players array a Player object
-    // containing socket_id, name, team, role
-    console.log(payload, socket.id);
+    // Set the player's team
+    player.setTeam(team);
 
+    // Set the player's role
+    player.setRole(role);
+
+    // Add Player object to players array
+    players.push(player);
+
+    // Join room depending on role
     if (role === SPYMASTER) {
       socket.join("lobby-spymasters");
     } else {
