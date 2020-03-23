@@ -120,14 +120,11 @@ io.on("connection", socket => {
   // Upon pressing the 'Join Lobby' button
   socket.on(JOIN_LOBBY, payload => {
     player.setName(payload); // Set Player name
-    console.log("Player's name is:", player.getName());
   });
 
   // Upon joining a slot
   socket.on(JOIN_SLOT, payload => {
     const { team, index } = payload;
-
-    console.log("joining team", team, "at index:", index);
 
     // Prevent duplicate players in teams
     erasePlayerIfOnEitherTeam(socket.id);
@@ -138,9 +135,6 @@ io.on("connection", socket => {
     } else {
       blueTeam[index] = player;
     }
-
-    console.log("Red Team:", redTeam);
-    console.log("Blue Team:", blueTeam);
 
     io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
   });
