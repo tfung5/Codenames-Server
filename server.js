@@ -38,8 +38,8 @@ const io = require("socket.io").listen(server);
 /**
  * Game data
  */
-let redTeam = [];
-let blueTeam = [];
+let redTeam = new Array(4).fill(null);
+let blueTeam = new Array(4).fill(null);
 let board = new Board();
 
 /**
