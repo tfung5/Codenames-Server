@@ -49,10 +49,13 @@ const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
   FETCH_BOARD,
+  FETCH_TEAMS,
   GENERATE_BOARD,
   JOIN_LOBBY,
   JOIN_SLOT,
-  UPDATE_BOARD
+  START_GAME,
+  UPDATE_BOARD,
+  UPDATE_TEAMS
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 const { BLUE, RED } = require("./constants/Cards");
@@ -138,10 +141,12 @@ io.on("connection", socket => {
 
     console.log("Red Team:", redTeam);
     console.log("Blue Team:", blueTeam);
+
+    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
   });
 
   // Upon pressing the 'Start Game' button
-  socket.on("START_GAME", payload => {
+  socket.on(START_GAME, payload => {
     setPlayerInfo();
     setPlayerRooms();
   });
@@ -149,6 +154,11 @@ io.on("connection", socket => {
   // Handle FETCH_BOARD
   socket.on(FETCH_BOARD, () => {
     io.emit(UPDATE_BOARD, board.getBoard());
+  });
+
+  // Handle FETCH_TEAMS
+  socket.on(FETCH_TEAMS, () => {
+    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
   });
 
   // Handle GENERATE_BOARD
