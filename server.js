@@ -71,6 +71,37 @@ const erasePlayerIfOnTeam = (targetId, team) => {
   }
 };
 
+const setPlayerInfo = () => {
+  setPlayerInfoForTeam(redTeam);
+  setPlayerInfoForTeam(blueTeam);
+};
+
+const setPlayerInfoForTeam = team => {
+  for (let i in team) {
+    team[i].setTeam(team === redTeam ? RED : BLUE);
+    if (i !== 0) {
+      team[i].setRole(FIELD_OPERATIVE);
+    } else {
+      team[i].setRole(SPYMASTER);
+    }
+  }
+};
+
+const setPlayerRooms = socket => {
+  setPlayerRoomsForTeam(socket, redTeam);
+  setPlayerRoomsForTeam(socket, blueTeam);
+};
+
+const setPlayerRoomsForTeam = (socket, team) => {
+  for (let i in team) {
+    if (team[i].role === FIELD_OPERATIVE) {
+      socket.join("lobby-fieldOperatives");
+    } else {
+      socket.join("lobby-spymasters");
+    }
+  }
+};
+
 /**
  * Start socket server with `on` method.
  * Listen for action types
@@ -108,23 +139,10 @@ io.on("connection", socket => {
     console.log("Blue Team:", blueTeam);
   });
 
-  // When the game is started, SEND_PLAYER_INFO should be received by the server
-  // Handle SEND_PLAYER_INFO
-  socket.on(SEND_PLAYER_INFO, payload => {
-    const { name, team, role } = payload;
-
-    // Set the player's team
-    player.setTeam(team);
-
-    // Set the player's role
-    player.setRole(role);
-
-    // Join room depending on role
-    if (role === SPYMASTER) {
-      socket.join("lobby-spymasters");
-    } else {
-      socket.join("lobby-fieldOperatives");
-    }
+  // Upon pressing the 'Start Game' button
+  socket.on("START_GAME", payload => {
+    setPlayerInfo();
+    setPlayerRooms();
   });
 
   // Handle FETCH_BOARD
