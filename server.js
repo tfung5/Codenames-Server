@@ -51,6 +51,7 @@ const {
   FETCH_BOARD,
   GENERATE_BOARD,
   JOIN_LOBBY,
+  JOIN_SLOT,
   UPDATE_BOARD
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
@@ -120,7 +121,7 @@ io.on("connection", socket => {
   });
 
   // Upon joining a slot
-  socket.on("JOIN_SLOT", payload => {
+  socket.on(JOIN_SLOT, payload => {
     const { team, index } = payload;
 
     console.log("joining team", team, "at index:", index);
