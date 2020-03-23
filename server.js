@@ -42,15 +42,17 @@ let players = [];
 let board = new Board();
 
 /**
- * Require action types
+ * Require constants
  */
 const {
   CHAT_MESSAGE,
-  UPDATE_BOARD,
+  CHOOSE_CARD,
   FETCH_BOARD,
   GENERATE_BOARD,
-  CHOOSE_CARD
+  SEND_PLAYER_INFO,
+  UPDATE_BOARD
 } = require("./constants/Actions");
+const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
 /**
  * Start socket server with `on` method.
@@ -59,6 +61,22 @@ const {
  */
 io.on("connection", socket => {
   console.log("A user connected :D");
+
+  // Handle SEND_PLAYER_INFO
+  socket.on(SEND_PLAYER_INFO, payload => {
+    const { name, team, role } = payload;
+
+    // TODO: Add player to list of players
+    // Ideally, push to players array a Player object
+    // containing socket_id, name, team, role
+    console.log(payload, socket.id);
+
+    if (role === SPYMASTER) {
+      socket.join("lobby-spymasters");
+    } else {
+      socket.join("lobby-fieldOperatives");
+    }
+  });
 
   // Handle FETCH_BOARD
   socket.on(FETCH_BOARD, () => {
