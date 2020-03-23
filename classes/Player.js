@@ -1,7 +1,14 @@
+// A player's id is their socket id.
+
 class Player {
-  constructor(name) {
+  constructor(id, name = "Player") {
+    this.id = id;
     this.name = name;
   }
+
+  getId = () => {
+    return this.id;
+  };
 
   setName = name => {
     this.name = name;
