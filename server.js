@@ -38,7 +38,8 @@ const io = require("socket.io").listen(server);
 /**
  * Game data
  */
-let players = [];
+let redTeam = [];
+let blueTeam = [];
 let board = new Board();
 
 /**
@@ -53,6 +54,22 @@ const {
   UPDATE_BOARD
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
+const { BLUE, RED } = require("./constants/Cards");
+
+const erasePlayerIfOnEitherTeam = targetId => {
+  erasePlayerIfOnTeam(targetId, redTeam);
+  erasePlayerIfOnTeam(targetId, blueTeam);
+};
+
+const erasePlayerIfOnTeam = (targetId, team) => {
+  for (let i in team) {
+    const player = team[i];
+
+    if (player && player.getId() === targetId) {
+      delete team[i];
+    }
+  }
+};
 
 /**
  * Start socket server with `on` method.
@@ -62,11 +79,34 @@ const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 io.on("connection", socket => {
   console.log("A user connected :D");
 
-  // Create Player object upon entering Lobby screen
-  let player = new Player(socket.id);
+  // Upon entering the HomeScreen
+  let player = new Player(socket.id); // Create Player object
 
-  // Join Lobby room
-  socket.join("lobby");
+  // Upon pressing the 'Join Lobby' button
+  socket.on("JOIN_LOBBY", payload => {
+    player.setName(payload); // Set Player name
+    console.log("Player's name is:", player.getName());
+  });
+
+  // Upon joining a slot
+  socket.on("JOIN_SLOT", payload => {
+    const { team, index } = payload;
+
+    console.log("joining team", team, "at index:", index);
+
+    // Prevent duplicate players in teams
+    erasePlayerIfOnEitherTeam(socket.id);
+
+    // Insert Player into appropriate team and position
+    if (team === RED) {
+      redTeam[index] = player;
+    } else {
+      blueTeam[index] = player;
+    }
+
+    console.log("Red Team:", redTeam);
+    console.log("Blue Team:", blueTeam);
+  });
 
   // When the game is started, SEND_PLAYER_INFO should be received by the server
   // Handle SEND_PLAYER_INFO
@@ -78,9 +118,6 @@ io.on("connection", socket => {
 
     // Set the player's role
     player.setRole(role);
-
-    // Add Player object to players array
-    players.push(player);
 
     // Join room depending on role
     if (role === SPYMASTER) {
