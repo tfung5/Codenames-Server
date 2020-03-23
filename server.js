@@ -50,7 +50,6 @@ const {
   CHOOSE_CARD,
   FETCH_BOARD,
   GENERATE_BOARD,
-  SEND_PLAYER_INFO,
   UPDATE_BOARD
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
