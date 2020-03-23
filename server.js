@@ -50,6 +50,7 @@ const {
   CHOOSE_CARD,
   FETCH_BOARD,
   GENERATE_BOARD,
+  JOIN_LOBBY,
   UPDATE_BOARD
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
@@ -113,7 +114,7 @@ io.on("connection", socket => {
   let player = new Player(socket.id); // Create Player object
 
   // Upon pressing the 'Join Lobby' button
-  socket.on("JOIN_LOBBY", payload => {
+  socket.on(JOIN_LOBBY, payload => {
     player.setName(payload); // Set Player name
     console.log("Player's name is:", player.getName());
   });
