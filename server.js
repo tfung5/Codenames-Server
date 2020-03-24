@@ -50,8 +50,10 @@ const {
   CHOOSE_CARD,
   GET_GAME,
   FETCH_TEAMS,
+  INDVIDUAL_START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
+  REQUEST_INDVIDUAL_START_GAME,
   RESTART_GAME,
   START_GAME,
   UPDATE_GAME,
@@ -59,21 +61,6 @@ const {
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 const { BLUE, RED } = require("./constants/Cards");
-
-const setPlayerRooms = socket => {
-  setPlayerRoomsForTeam(socket, redTeam);
-  setPlayerRoomsForTeam(socket, blueTeam);
-};
-
-const setPlayerRoomsForTeam = (socket, team) => {
-  for (let i in team) {
-    if (team[i].role === FIELD_OPERATIVE) {
-      socket.join("lobby-fieldOperatives");
-    } else {
-      socket.join("lobby-spymasters");
-    }
-  }
-};
 
 /**
  * Start socket server with `on` method.
@@ -103,9 +90,17 @@ io.on("connection", socket => {
   // Upon anyone pressing the 'Start Game' button
   socket.on(START_GAME, () => {
     game.setPlayerInfo();
-    // TODO: setPlayerRooms();
     game.startGame();
-    io.emit(UPDATE_GAME, game.getGame());
+
+    // Request that each player start the game themselves
+    io.emit(REQUEST_INDVIDUAL_START_GAME);
+  });
+
+  // When each player individually starts the game
+  socket.on(INDVIDUAL_START_GAME, () => {
+    player = game.getPlayerById(socket.id); // Get their latest Player object
+    joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
+    io.emit(UPDATE_GAME, game.getGame(player.getRole())); // Get the latest game state and board, depending on their role
   });
 
   // Handle RESTART_GAME
@@ -141,6 +136,15 @@ io.on("connection", socket => {
       redTeam: game.getRedTeam(),
       blueTeam: game.getBlueTeam()
     });
+  };
+
+  // Join appropriate room depending on role
+  const joinRoomByRole = role => {
+    if (role === FIELD_OPERATIVE) {
+      socket.join("lobby-fieldOperatives");
+    } else {
+      socket.join("lobby-spymasters");
+    }
   };
 });
 

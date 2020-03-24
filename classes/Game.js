@@ -151,25 +151,31 @@ class Game {
 
   setPlayerInfoForTeam = team => {
     for (let i in team) {
-      team[i].setTeam(team === redTeam ? RED : BLUE);
-      if (i !== 0) {
-        team[i].setRole(FIELD_OPERATIVE);
-      } else {
-        team[i].setRole(SPYMASTER);
+      if (team[i]) {
+        // Set team
+        team[i].setTeam(team === this.redTeam ? RED : BLUE);
+
+        // Set role
+        if (i !== 0) {
+          team[i].setRole(FIELD_OPERATIVE);
+        } else {
+          team[i].setRole(SPYMASTER);
+        }
       }
     }
   };
 
   getPlayerById = targetId => {
-    return (
-      getPlayerByIdOnTeam(targetId, this.redTeam) ||
-      getPlayerByIdOnTeam(targetId, this.blueTeam)
-    );
+    let player =
+      this.getPlayerByIdOnTeam(targetId, this.redTeam) ||
+      this.getPlayerByIdOnTeam(targetId, this.blueTeam);
+
+    return player;
   };
 
   getPlayerByIdOnTeam = (targetId, team) => {
     for (let player of team) {
-      if (player.getId() === targetId) {
+      if (player && player.getId() === targetId) {
         return player;
       }
     }
