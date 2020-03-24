@@ -198,7 +198,7 @@ class Game {
         currRow.push({
           word: null, // Word to be assigned.
           color: GRAY, // Color to be assigned. GRAY by default.
-          state: CHOSEN,
+          state: UNCHOSEN,
           row,
           col
         });
@@ -333,7 +333,6 @@ class Game {
     for (let row of boardCopy) {
       for (let card of row) {
         card.color = null;
-        card.state = UNCHOSEN;
       }
     }
 
