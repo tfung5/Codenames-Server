@@ -60,37 +60,6 @@ const {
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 const { BLUE, RED } = require("./constants/Cards");
 
-const erasePlayerIfOnEitherTeam = targetId => {
-  erasePlayerIfOnTeam(targetId, redTeam);
-  erasePlayerIfOnTeam(targetId, blueTeam);
-};
-
-const erasePlayerIfOnTeam = (targetId, team) => {
-  for (let i in team) {
-    const player = team[i];
-
-    if (player && player.getId() === targetId) {
-      delete team[i];
-    }
-  }
-};
-
-const setPlayerInfo = () => {
-  setPlayerInfoForTeam(redTeam);
-  setPlayerInfoForTeam(blueTeam);
-};
-
-const setPlayerInfoForTeam = team => {
-  for (let i in team) {
-    team[i].setTeam(team === redTeam ? RED : BLUE);
-    if (i !== 0) {
-      team[i].setRole(FIELD_OPERATIVE);
-    } else {
-      team[i].setRole(SPYMASTER);
-    }
-  }
-};
-
 const setPlayerRooms = socket => {
   setPlayerRoomsForTeam(socket, redTeam);
   setPlayerRoomsForTeam(socket, blueTeam);
@@ -126,23 +95,15 @@ io.on("connection", socket => {
   socket.on(JOIN_SLOT, payload => {
     const { team, index } = payload;
 
-    // Prevent duplicate players in teams
-    erasePlayerIfOnEitherTeam(socket.id);
+    game.insertPlayerIntoSlot(player, team, index);
 
-    // Insert Player into appropriate team and position
-    if (team === RED) {
-      redTeam[index] = player;
-    } else {
-      blueTeam[index] = player;
-    }
-
-    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
+    emitUpdateTeams();
   });
 
-  // Upon pressing the 'Start Game' button
+  // Upon anyone pressing the 'Start Game' button
   socket.on(START_GAME, () => {
-    setPlayerInfo();
-    setPlayerRooms();
+    game.setPlayerInfo();
+    // TODO: setPlayerRooms();
     game.startGame();
     io.emit(UPDATE_GAME, game.getGame());
   });
@@ -160,7 +121,7 @@ io.on("connection", socket => {
 
   // Handle FETCH_TEAMS
   socket.on(FETCH_TEAMS, () => {
-    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
+    emitUpdateTeams();
   });
 
   // Handle CHAT_MESSAGE
@@ -173,6 +134,14 @@ io.on("connection", socket => {
     game.chooseCard(payload.row, payload.col);
     io.emit(UPDATE_GAME, game.getGame());
   });
+
+  // Emit UPDATE_TEAMS
+  const emitUpdateTeams = () => {
+    io.emit(UPDATE_TEAMS, {
+      redTeam: game.getRedTeam(),
+      blueTeam: game.getBlueTeam()
+    });
+  };
 });
 
 /**

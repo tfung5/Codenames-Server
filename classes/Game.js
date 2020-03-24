@@ -76,8 +76,17 @@ const wordList = [
 
 class Game {
   constructor() {
+    this.resetTeamInfo();
     this.resetGame();
   }
+
+  /**
+   * Resets team info
+   */
+  resetTeamInfo = () => {
+    this.redTeam = new Array(4).fill(null);
+    this.blueTeam = new Array(4).fill(null);
+  };
 
   /**
    * Resets the game
@@ -90,6 +99,82 @@ class Game {
     this.startingTeam = "";
 
     console.log("Board reset completed.");
+  };
+
+  /**
+   * Insert player into slot
+   */
+  insertPlayerIntoSlot = (player, team, index) => {
+    // Prevent duplicate players
+    this.erasePlayerFromEitherTeam(player.getId());
+
+    // Insert Player into appropriate team and position
+    this.insertPlayerIntoTeam(player, team, index);
+  };
+
+  /**
+   * Insert player into team
+   */
+  insertPlayerIntoTeam = (player, team, index) => {
+    if (team === RED) {
+      this.redTeam[index] = player;
+    } else {
+      this.blueTeam[index] = player;
+    }
+  };
+
+  /**
+   * Erase player if on either team
+   */
+  erasePlayerFromEitherTeam = targetId => {
+    this.erasePlayerFromTeam(targetId, this.redTeam);
+    this.erasePlayerFromTeam(targetId, this.blueTeam);
+  };
+
+  /**
+   * Erase player if on given team
+   */
+  erasePlayerFromTeam = (targetId, team) => {
+    for (let i in team) {
+      const player = team[i];
+
+      if (player && player.getId() === targetId) {
+        delete team[i];
+      }
+    }
+  };
+
+  setPlayerInfo = () => {
+    this.setPlayerInfoForTeam(this.redTeam);
+    this.setPlayerInfoForTeam(this.blueTeam);
+  };
+
+  setPlayerInfoForTeam = team => {
+    for (let i in team) {
+      team[i].setTeam(team === redTeam ? RED : BLUE);
+      if (i !== 0) {
+        team[i].setRole(FIELD_OPERATIVE);
+      } else {
+        team[i].setRole(SPYMASTER);
+      }
+    }
+  };
+
+  getPlayerById = targetId => {
+    return (
+      getPlayerByIdOnTeam(targetId, this.redTeam) ||
+      getPlayerByIdOnTeam(targetId, this.blueTeam)
+    );
+  };
+
+  getPlayerByIdOnTeam = (targetId, team) => {
+    for (let player of team) {
+      if (player.getId() === targetId) {
+        return player;
+      }
+    }
+
+    return null;
   };
 
   /**
@@ -272,6 +357,20 @@ class Game {
       startingTeam: this.startingTeam,
       board: this.getBoard(role)
     };
+  };
+
+  /**
+   * Get red team
+   */
+  getRedTeam = () => {
+    return this.redTeam;
+  };
+
+  /**
+   * Get blue team
+   */
+  getBlueTeam = () => {
+    return this.blueTeam;
   };
 
   /**
