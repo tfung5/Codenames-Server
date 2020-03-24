@@ -48,7 +48,7 @@ let game = new Game();
 const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
-  FETCH_GAME,
+  GET_GAME,
   FETCH_TEAMS,
   JOIN_LOBBY,
   JOIN_SLOT,
@@ -144,18 +144,18 @@ io.on("connection", socket => {
     setPlayerInfo();
     setPlayerRooms();
     game.startGame();
-    io.emit(UPDATE_GAME, game.getBoard());
+    io.emit(UPDATE_GAME, game.getGame());
   });
 
   // Handle RESTART_GAME
   socket.on(RESTART_GAME, () => {
     game.restartGame();
-    io.emit(UPDATE_GAME, game.getBoard());
+    io.emit(UPDATE_GAME, game.getGame());
   });
 
-  // Handle FETCH_GAME
-  socket.on(FETCH_GAME, () => {
-    io.emit(UPDATE_GAME, game.getBoard());
+  // Handle GET_GAME
+  socket.on(GET_GAME, () => {
+    io.emit(UPDATE_GAME, game.getGame());
   });
 
   // Handle FETCH_TEAMS
@@ -176,7 +176,7 @@ io.on("connection", socket => {
   // Handle CHOOSE_CARD
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
-    io.emit(UPDATE_GAME, game.getBoard());
+    io.emit(UPDATE_GAME, game.getGame());
   });
 });
 

@@ -264,6 +264,17 @@ class Game {
   };
 
   /**
+   * Get all game information
+   * @return An object containing all game data
+   */
+  getGame = role => {
+    return {
+      startingTeam: this.startingTeam,
+      board: this.getBoard(role)
+    };
+  };
+
+  /**
    * A player chooses a card to flip over
    * @param {int} The row of a given position
    * @param {int} The column of a given position
