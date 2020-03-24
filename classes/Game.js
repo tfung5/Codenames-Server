@@ -222,6 +222,12 @@ class Game {
     console.log("Game creation completed.");
   };
 
+  restartGame = () => {
+    console.log("Game restarting.");
+    this.startGame();
+    console.log("Game restarted");
+  };
+
   generateSpymasterBoard = () => {
     let board = this.createBoard();
     board = this.assignColors(board);

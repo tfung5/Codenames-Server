@@ -52,6 +52,7 @@ const {
   FETCH_TEAMS,
   JOIN_LOBBY,
   JOIN_SLOT,
+  RESTART_GAME,
   START_GAME,
   UPDATE_GAME,
   UPDATE_TEAMS
@@ -139,10 +140,16 @@ io.on("connection", socket => {
   });
 
   // Upon pressing the 'Start Game' button
-  socket.on(START_GAME, payload => {
+  socket.on(START_GAME, () => {
     setPlayerInfo();
     setPlayerRooms();
     game.startGame();
+    io.emit(UPDATE_GAME, game.getBoard());
+  });
+
+  // Handle RESTART_GAME
+  socket.on(RESTART_GAME, () => {
+    game.restartGame();
     io.emit(UPDATE_GAME, game.getBoard());
   });
 
