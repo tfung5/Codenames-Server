@@ -15,7 +15,7 @@ const onListening = require("./utils/onListening");
  * Classes
  */
 const Player = require("./classes/Player");
-const Board = require("./classes/Board");
+const Game = require("./classes/Game");
 
 /**
  * Get port from environment and store in Express.
@@ -40,7 +40,7 @@ const io = require("socket.io").listen(server);
  */
 let redTeam = new Array(4).fill(null);
 let blueTeam = new Array(4).fill(null);
-let board = new Board();
+let game = new Game();
 
 /**
  * Require constants
@@ -48,63 +48,19 @@ let board = new Board();
 const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
-  FETCH_BOARD,
+  GET_GAME,
   FETCH_TEAMS,
-  GENERATE_BOARD,
+  INDIVIDUAL_START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
+  REQUEST_INDIVIDUAL_START_GAME,
+  RESTART_GAME,
   START_GAME,
-  UPDATE_BOARD,
+  UPDATE_GAME,
   UPDATE_TEAMS
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 const { BLUE, RED } = require("./constants/Cards");
-
-const erasePlayerIfOnEitherTeam = targetId => {
-  erasePlayerIfOnTeam(targetId, redTeam);
-  erasePlayerIfOnTeam(targetId, blueTeam);
-};
-
-const erasePlayerIfOnTeam = (targetId, team) => {
-  for (let i in team) {
-    const player = team[i];
-
-    if (player && player.getId() === targetId) {
-      delete team[i];
-    }
-  }
-};
-
-const setPlayerInfo = () => {
-  setPlayerInfoForTeam(redTeam);
-  setPlayerInfoForTeam(blueTeam);
-};
-
-const setPlayerInfoForTeam = team => {
-  for (let i in team) {
-    team[i].setTeam(team === redTeam ? RED : BLUE);
-    if (i !== 0) {
-      team[i].setRole(FIELD_OPERATIVE);
-    } else {
-      team[i].setRole(SPYMASTER);
-    }
-  }
-};
-
-const setPlayerRooms = socket => {
-  setPlayerRoomsForTeam(socket, redTeam);
-  setPlayerRoomsForTeam(socket, blueTeam);
-};
-
-const setPlayerRoomsForTeam = (socket, team) => {
-  for (let i in team) {
-    if (team[i].role === FIELD_OPERATIVE) {
-      socket.join("lobby-fieldOperatives");
-    } else {
-      socket.join("lobby-spymasters");
-    }
-  }
-};
 
 /**
  * Start socket server with `on` method.
@@ -122,43 +78,46 @@ io.on("connection", socket => {
     player.setName(payload); // Set Player name
   });
 
+  // Upon loading the LobbyView
+  socket.on(FETCH_TEAMS, () => {
+    emitUpdateTeams();
+  });
+
   // Upon joining a slot
   socket.on(JOIN_SLOT, payload => {
     const { team, index } = payload;
-
-    // Prevent duplicate players in teams
-    erasePlayerIfOnEitherTeam(socket.id);
-
-    // Insert Player into appropriate team and position
-    if (team === RED) {
-      redTeam[index] = player;
-    } else {
-      blueTeam[index] = player;
-    }
-
-    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
+    game.insertPlayerIntoSlot(player, team, index);
+    emitUpdateTeams();
   });
 
-  // Upon pressing the 'Start Game' button
-  socket.on(START_GAME, payload => {
-    setPlayerInfo();
-    setPlayerRooms();
+  // Upon *anyone* pressing the 'Start Game' button
+  socket.on(START_GAME, () => {
+    game.setPlayerInfo(); // Set team and roles for each player
+    game.startGame(); // Generate the game info and board
+    io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
   });
 
-  // Handle FETCH_BOARD
-  socket.on(FETCH_BOARD, () => {
-    io.emit(UPDATE_BOARD, board.getBoard());
+  // To start the process for each player
+  socket.on(INDIVIDUAL_START_GAME, () => {
+    player = game.getPlayerById(socket.id); // Get their latest Player object
+    joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
   });
 
-  // Handle FETCH_TEAMS
-  socket.on(FETCH_TEAMS, () => {
-    io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
+  // Upon loading the GameScreen
+  socket.on(GET_GAME, () => {
+    emitUpdateGame();
   });
 
-  // Handle GENERATE_BOARD
-  socket.on(GENERATE_BOARD, () => {
-    board.generateBoard();
-    io.emit(UPDATE_BOARD, board.getBoard());
+  // Upon pressing a card
+  socket.on(CHOOSE_CARD, payload => {
+    game.chooseCard(payload.row, payload.col);
+    emitUpdateGame();
+  });
+
+  // Upon anyone pressing the 'Restart Game' button
+  socket.on(RESTART_GAME, () => {
+    game.restartGame();
+    emitUpdateGame();
   });
 
   // Handle CHAT_MESSAGE
@@ -166,16 +125,28 @@ io.on("connection", socket => {
     io.emit(CHAT_MESSAGE, payload);
   });
 
-  // Handle UPDATE_BOARD
-  socket.on(UPDATE_BOARD, payload => {
-    io.emit(UPDATE_BOARD, payload);
-  });
+  // Emit UPDATE_GAME
+  const emitUpdateGame = () => {
+    // Send to the player on this socket the corresponding game information based on their role
+    io.to(socket.id).emit(UPDATE_GAME, game.getGameByRole(player.getRole()));
+  };
 
-  // Handle CHOOSE_CARD
-  socket.on(CHOOSE_CARD, payload => {
-    board.chooseCard(payload.row, payload.col);
-    io.emit(UPDATE_BOARD, board.getBoard());
-  });
+  // Emit UPDATE_TEAMS
+  const emitUpdateTeams = () => {
+    io.emit(UPDATE_TEAMS, {
+      redTeam: game.getRedTeam(),
+      blueTeam: game.getBlueTeam()
+    });
+  };
+
+  // Join appropriate room depending on role
+  const joinRoomByRole = role => {
+    if (role === FIELD_OPERATIVE) {
+      socket.join("lobby-fieldOperatives");
+    } else {
+      socket.join("lobby-spymasters");
+    }
+  };
 });
 
 /**
@@ -184,7 +155,7 @@ io.on("connection", socket => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  board.generateBoard();
+  game.startGame();
 });
 server.on("Error", err => onError(err, port));
 server.on("Listening", () => onListening(server));
