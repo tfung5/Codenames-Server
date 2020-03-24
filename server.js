@@ -50,7 +50,6 @@ const {
   CHOOSE_CARD,
   FETCH_GAME,
   FETCH_TEAMS,
-  START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
   START_GAME,
@@ -143,6 +142,8 @@ io.on("connection", socket => {
   socket.on(START_GAME, payload => {
     setPlayerInfo();
     setPlayerRooms();
+    game.startGame();
+    io.emit(UPDATE_GAME, game.getBoard());
   });
 
   // Handle FETCH_GAME
@@ -153,12 +154,6 @@ io.on("connection", socket => {
   // Handle FETCH_TEAMS
   socket.on(FETCH_TEAMS, () => {
     io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
-  });
-
-  // Handle START_GAME
-  socket.on(START_GAME, () => {
-    game.startGame();
-    io.emit(UPDATE_GAME, game.getBoard());
   });
 
   // Handle CHAT_MESSAGE
