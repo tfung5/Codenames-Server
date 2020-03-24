@@ -48,13 +48,13 @@ let game = new Game();
 const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
-  FETCH_BOARD,
+  FETCH_GAME,
   FETCH_TEAMS,
-  GENERATE_BOARD,
+  START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
   START_GAME,
-  UPDATE_BOARD,
+  UPDATE_GAME,
   UPDATE_TEAMS
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
@@ -145,9 +145,9 @@ io.on("connection", socket => {
     setPlayerRooms();
   });
 
-  // Handle FETCH_BOARD
-  socket.on(FETCH_BOARD, () => {
-    io.emit(UPDATE_BOARD, game.getBoard());
+  // Handle FETCH_GAME
+  socket.on(FETCH_GAME, () => {
+    io.emit(UPDATE_GAME, game.getBoard());
   });
 
   // Handle FETCH_TEAMS
@@ -155,10 +155,10 @@ io.on("connection", socket => {
     io.emit(UPDATE_TEAMS, { redTeam, blueTeam });
   });
 
-  // Handle GENERATE_BOARD
-  socket.on(GENERATE_BOARD, () => {
+  // Handle START_GAME
+  socket.on(START_GAME, () => {
     game.startGame();
-    io.emit(UPDATE_BOARD, game.getBoard());
+    io.emit(UPDATE_GAME, game.getBoard());
   });
 
   // Handle CHAT_MESSAGE
@@ -166,15 +166,15 @@ io.on("connection", socket => {
     io.emit(CHAT_MESSAGE, payload);
   });
 
-  // Handle UPDATE_BOARD
-  socket.on(UPDATE_BOARD, payload => {
-    io.emit(UPDATE_BOARD, payload);
+  // Handle UPDATE_GAME
+  socket.on(UPDATE_GAME, payload => {
+    io.emit(UPDATE_GAME, payload);
   });
 
   // Handle CHOOSE_CARD
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
-    io.emit(UPDATE_BOARD, game.getBoard());
+    io.emit(UPDATE_GAME, game.getBoard());
   });
 });
 
