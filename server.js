@@ -168,11 +168,6 @@ io.on("connection", socket => {
     io.emit(CHAT_MESSAGE, payload);
   });
 
-  // Handle UPDATE_GAME
-  socket.on(UPDATE_GAME, payload => {
-    io.emit(UPDATE_GAME, payload);
-  });
-
   // Handle CHOOSE_CARD
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
