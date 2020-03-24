@@ -15,7 +15,7 @@ const onListening = require("./utils/onListening");
  * Classes
  */
 const Player = require("./classes/Player");
-const Board = require("./classes/Board");
+const Game = require("./classes/Game");
 
 /**
  * Get port from environment and store in Express.
@@ -40,7 +40,7 @@ const io = require("socket.io").listen(server);
  */
 let redTeam = new Array(4).fill(null);
 let blueTeam = new Array(4).fill(null);
-let board = new Board();
+let game = new Game();
 
 /**
  * Require constants
@@ -147,7 +147,7 @@ io.on("connection", socket => {
 
   // Handle FETCH_BOARD
   socket.on(FETCH_BOARD, () => {
-    io.emit(UPDATE_BOARD, board.getBoard());
+    io.emit(UPDATE_BOARD, game.getBoard());
   });
 
   // Handle FETCH_TEAMS
@@ -157,8 +157,8 @@ io.on("connection", socket => {
 
   // Handle GENERATE_BOARD
   socket.on(GENERATE_BOARD, () => {
-    board.generateBoard();
-    io.emit(UPDATE_BOARD, board.getBoard());
+    game.startGame();
+    io.emit(UPDATE_BOARD, game.getBoard());
   });
 
   // Handle CHAT_MESSAGE
@@ -173,8 +173,8 @@ io.on("connection", socket => {
 
   // Handle CHOOSE_CARD
   socket.on(CHOOSE_CARD, payload => {
-    board.chooseCard(payload.row, payload.col);
-    io.emit(UPDATE_BOARD, board.getBoard());
+    game.chooseCard(payload.row, payload.col);
+    io.emit(UPDATE_BOARD, game.getBoard());
   });
 });
 
@@ -184,7 +184,7 @@ io.on("connection", socket => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  board.generateBoard();
+  game.startGame();
 });
 server.on("Error", err => onError(err, port));
 server.on("Listening", () => onListening(server));

@@ -74,15 +74,15 @@ const wordList = [
   "Stock"
 ];
 
-class Board {
+class Game {
   constructor() {
-    this.clearBoard();
+    this.resetGame();
   }
 
   /**
-   * Clears the board
+   * Resets the game
    */
-  clearBoard = () => {
+  resetGame = () => {
     console.log("Board reset starting.");
 
     this.spymasterBoard = [];
@@ -209,17 +209,17 @@ class Board {
   };
 
   /**
-   * Generate a random board by creating the spymaster board first, assigning it random colors and words, and then obscuring the colors to create the field operative board.
+   * Starts the game by creating the spymaster board first, assigning it random colors and words, and then obscuring the colors to create the field operative board.
    */
-  generateBoard = () => {
-    console.log("Board generation starting.");
+  startGame = () => {
+    console.log("Game creation starting.");
 
-    this.clearBoard();
+    this.resetGame();
     this.selectStartingTeam();
     this.generateSpymasterBoard();
     this.generateFieldOperativeBoard();
 
-    console.log("Board generation completed.");
+    console.log("Game creation completed.");
   };
 
   generateSpymasterBoard = () => {
@@ -291,4 +291,4 @@ class Board {
   };
 }
 
-module.exports = Board;
+module.exports = Game;
