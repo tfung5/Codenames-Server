@@ -105,19 +105,19 @@ io.on("connection", socket => {
 
   // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
-    emitUpdateGame();
+    emitUpdateGameIndividual();
   });
 
   // Upon pressing a card
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
-    emitUpdateGame();
+    emitUpdateGameAll();
   });
 
   // Upon anyone pressing the 'Restart Game' button
   socket.on(RESTART_GAME, () => {
     game.restartGame();
-    emitUpdateGame();
+    emitUpdateGameAll();
   });
 
   // Handle CHAT_MESSAGE
@@ -125,10 +125,19 @@ io.on("connection", socket => {
     io.emit(CHAT_MESSAGE, payload);
   });
 
-  // Emit UPDATE_GAME
-  const emitUpdateGame = () => {
+  // Emit UPDATE_GAME individually
+  const emitUpdateGameIndividual = () => {
     // Send to the player on this socket the corresponding game information based on their role
     io.to(socket.id).emit(UPDATE_GAME, game.getGameByRole(player.getRole()));
+  };
+
+  // Emit UPDATE_GAME to all
+  const emitUpdateGameAll = () => {
+    io.to("lobby-spymasters").emit(UPDATE_GAME, game.getGameByRole(SPYMASTER));
+    io.to("lobby-fieldOperatives").emit(
+      UPDATE_GAME,
+      game.getGameByRole(FIELD_OPERATIVE)
+    );
   };
 
   // Emit UPDATE_TEAMS
