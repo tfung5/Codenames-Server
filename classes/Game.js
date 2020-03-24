@@ -346,7 +346,7 @@ class Game {
    * If field operative, return the board with information obscured.
    * @return {Board} The current board
    */
-  getBoard = role => {
+  getBoardByRole = role => {
     if (role === SPYMASTER) {
       return this.spymasterBoard;
     } else {
@@ -358,10 +358,10 @@ class Game {
    * Get all game information
    * @return An object containing all game data
    */
-  getGame = role => {
+  getGameByRole = role => {
     return {
       startingTeam: this.startingTeam,
-      board: this.getBoard(role)
+      board: this.getBoardByRole(role)
     };
   };
 

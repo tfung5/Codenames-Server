@@ -50,10 +50,10 @@ const {
   CHOOSE_CARD,
   GET_GAME,
   FETCH_TEAMS,
-  INDVIDUAL_START_GAME,
+  INDIVIDUAL_START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
-  REQUEST_INDVIDUAL_START_GAME,
+  REQUEST_INDIVIDUAL_START_GAME,
   RESTART_GAME,
   START_GAME,
   UPDATE_GAME,
@@ -78,44 +78,46 @@ io.on("connection", socket => {
     player.setName(payload); // Set Player name
   });
 
-  // Upon joining a slot
-  socket.on(JOIN_SLOT, payload => {
-    const { team, index } = payload;
-
-    game.insertPlayerIntoSlot(player, team, index);
-
+  // Upon loading the LobbyView
+  socket.on(FETCH_TEAMS, () => {
     emitUpdateTeams();
   });
 
-  // Upon anyone pressing the 'Start Game' button
-  socket.on(START_GAME, () => {
-    game.setPlayerInfo();
-    game.startGame();
-
-    // Request that each player start the game themselves
-    io.emit(REQUEST_INDVIDUAL_START_GAME);
+  // Upon joining a slot
+  socket.on(JOIN_SLOT, payload => {
+    const { team, index } = payload;
+    game.insertPlayerIntoSlot(player, team, index);
+    emitUpdateTeams();
   });
 
-  // When each player individually starts the game
-  socket.on(INDVIDUAL_START_GAME, () => {
+  // Upon *anyone* pressing the 'Start Game' button
+  socket.on(START_GAME, () => {
+    game.setPlayerInfo(); // Set team and roles for each player
+    game.startGame(); // Generate the game info and board
+    io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
+  });
+
+  // To start the process for each player
+  socket.on(INDIVIDUAL_START_GAME, () => {
     player = game.getPlayerById(socket.id); // Get their latest Player object
     joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
   });
 
-  // Handle RESTART_GAME
-  socket.on(RESTART_GAME, () => {
-    game.restartGame();
-    emitUpdateGame();
-  });
-
-  // Handle GET_GAME
+  // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
     emitUpdateGame();
   });
 
-  // Handle FETCH_TEAMS
-  socket.on(FETCH_TEAMS, () => {
-    emitUpdateTeams();
+  // Upon pressing a card
+  socket.on(CHOOSE_CARD, payload => {
+    game.chooseCard(payload.row, payload.col);
+    emitUpdateGame();
+  });
+
+  // Upon anyone pressing the 'Restart Game' button
+  socket.on(RESTART_GAME, () => {
+    game.restartGame();
+    emitUpdateGame();
   });
 
   // Handle CHAT_MESSAGE
@@ -123,16 +125,10 @@ io.on("connection", socket => {
     io.emit(CHAT_MESSAGE, payload);
   });
 
-  // Handle CHOOSE_CARD
-  socket.on(CHOOSE_CARD, payload => {
-    game.chooseCard(payload.row, payload.col);
-    emitUpdateGame();
-  });
-
   // Emit UPDATE_GAME
   const emitUpdateGame = () => {
     // Send to the player on this socket the corresponding game information based on their role
-    io.to(socket.id).emit(UPDATE_GAME, game.getGame(player.getRole()));
+    io.to(socket.id).emit(UPDATE_GAME, game.getGameByRole(player.getRole()));
   };
 
   // Emit UPDATE_TEAMS
