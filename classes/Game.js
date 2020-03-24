@@ -150,7 +150,7 @@ class Game {
   };
 
   setPlayerInfoForTeam = team => {
-    for (let i in team) {
+    for (let i = 0; i < team.length; ++i) {
       if (team[i]) {
         // Set team
         team[i].setTeam(team === this.redTeam ? RED : BLUE);

@@ -100,18 +100,17 @@ io.on("connection", socket => {
   socket.on(INDVIDUAL_START_GAME, () => {
     player = game.getPlayerById(socket.id); // Get their latest Player object
     joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
-    io.emit(UPDATE_GAME, game.getGame(player.getRole())); // Get the latest game state and board, depending on their role
   });
 
   // Handle RESTART_GAME
   socket.on(RESTART_GAME, () => {
     game.restartGame();
-    io.emit(UPDATE_GAME, game.getGame());
+    emitUpdateGame();
   });
 
   // Handle GET_GAME
   socket.on(GET_GAME, () => {
-    io.emit(UPDATE_GAME, game.getGame());
+    emitUpdateGame();
   });
 
   // Handle FETCH_TEAMS
@@ -127,8 +126,14 @@ io.on("connection", socket => {
   // Handle CHOOSE_CARD
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
-    io.emit(UPDATE_GAME, game.getGame());
+    emitUpdateGame();
   });
+
+  // Emit UPDATE_GAME
+  const emitUpdateGame = () => {
+    // Send to the player on this socket the corresponding game information based on their role
+    io.to(socket.id).emit(UPDATE_GAME, game.getGame(player.getRole()));
+  };
 
   // Emit UPDATE_TEAMS
   const emitUpdateTeams = () => {
