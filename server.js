@@ -47,6 +47,7 @@ let game = new Game();
  */
 const {
   CHAT_MESSAGE,
+  USER_NAME,
   CHOOSE_CARD,
   GET_GAME,
   FETCH_TEAMS,
@@ -123,6 +124,11 @@ io.on("connection", socket => {
   // Handle CHAT_MESSAGE
   socket.on(CHAT_MESSAGE, payload => {
     io.emit(CHAT_MESSAGE, payload);
+  });
+
+  // Return a player's name for chat
+  socket.on(USER_NAME, () => {
+    io.to(socket.id).emit(USER_NAME, player.getName());
   });
 
   // Emit UPDATE_GAME individually
