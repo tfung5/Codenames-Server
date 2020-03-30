@@ -86,6 +86,7 @@ class Game {
   resetTeamInfo = () => {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
+    this.players = {};
   };
 
   /**
@@ -148,6 +149,8 @@ class Game {
   setPlayerInfo = () => {
     this.setPlayerInfoForTeam(this.redTeam);
     this.setPlayerInfoForTeam(this.blueTeam);
+
+    this.createPlayersObject(); // Create player lookup object
   };
 
   setPlayerInfoForTeam = team => {
@@ -166,22 +169,27 @@ class Game {
     }
   };
 
-  getPlayerById = targetId => {
-    let player =
-      this.getPlayerByIdOnTeam(targetId, this.redTeam) ||
-      this.getPlayerByIdOnTeam(targetId, this.blueTeam);
+  createPlayersObject = () => {
+    const players = {};
 
-    return player;
+    this.addPlayersFromTeamToPlayersObject(this.redTeam, players);
+    this.addPlayersFromTeamToPlayersObject(this.blueTeam, players);
+
+    this.players = players;
   };
 
-  getPlayerByIdOnTeam = (targetId, team) => {
-    for (let player of team) {
-      if (player && player.getId() === targetId) {
-        return player;
+  addPlayersFromTeamToPlayersObject = (team, players) => {
+    for (let i = 0; i < 4; ++i) {
+      const player = team[i];
+
+      if (player) {
+        players[player.getId()] = player;
       }
     }
+  };
 
-    return null;
+  getPlayerById = targetId => {
+    return this.players[targetId];
   };
 
   /**
