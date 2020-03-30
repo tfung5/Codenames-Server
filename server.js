@@ -58,6 +58,7 @@ const {
   JOIN_SLOT,
   REQUEST_INDIVIDUAL_START_GAME,
   RESTART_GAME,
+  SET_CLUE,
   START_GAME,
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
@@ -139,6 +140,16 @@ io.on("connection", socket => {
   // Handle CHAT_MESSAGE
   socket.on(CHAT_MESSAGE, payload => {
     io.emit(CHAT_MESSAGE, payload);
+  });
+
+  /**
+   * Handle SET_CLUE
+   * Expected payload:
+   * { word: "string", number: int }
+   */
+  socket.on(SET_CLUE, payload => {
+    game.setClue(payload);
+    emitUpdateGameAll();
   });
 
   // Return a player's name for chat

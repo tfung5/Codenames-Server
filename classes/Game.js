@@ -38,6 +38,7 @@ class Game {
     this.fieldOperativeBoard = [];
     this.startingTeam = "";
     this.currentTeam = "";
+    this.clue = {};
 
     console.log("Board reset completed.");
   };
@@ -404,6 +405,14 @@ class Game {
   endTurn = () => {
     // Set the currentTeam to the other team
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
+  };
+
+  /**
+   * Sets the given clue
+   * @param {Object} containing a word and a number
+   */
+  setClue = clue => {
+    this.clue = clue;
   };
 }
 
