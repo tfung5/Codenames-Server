@@ -109,8 +109,8 @@ io.on("connection", socket => {
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
-    const playerObject = game.getPlayerById(socket.id);
-    io.to(socket.id).emit(UPDATE_PLAYER_INFO, playerObject.getPlayer());
+    const player = game.getPlayerById(socket.id);
+    io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
   });
 
   // Upon loading the GameScreen
