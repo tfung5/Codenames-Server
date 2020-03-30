@@ -195,6 +195,9 @@ class Game {
     let numRedCards = this.startingTeam === RED ? 9 : 8;
     let numBlueCards = this.startingTeam === RED ? 8 : 9;
     let numBlackCards = 1;
+    this.blueCardCounter = numBlueCards;
+    this.redCardCounter = numRedCards;
+    this.blackCardCounter = numBlueCards;
     var row, col;
 
     //RED CARDS
@@ -318,6 +321,8 @@ class Game {
     return {
       startingTeam: this.startingTeam,
       currentTeam: this.currentTeam,
+      redCardCounter: this.redCardCounter,
+      blueCardCounter: this.blueCardCounter,
       board: this.getBoardByRole(role)
     };
   };
@@ -332,6 +337,8 @@ class Game {
     return {
       startingTeam: this.startingTeam,
       currentTeam: this.currentTeam,
+      redCardCounter: this.redCardCounter,
+      blueCardCounter: this.blueCardCounter,
       team: player.getTeam(),
       board: this.getBoardByRole(player.getRole())
     };
@@ -357,11 +364,47 @@ class Game {
    * @param {int} The column of a given position
    */
   chooseCard = (row, col) => {
-    this.markChosen(row, col);
-    this.revealColor(row, col);
-    // TODO: this.updateBoardCounters, such as the number of cards left for each team, the number of guesses remaining.
-    // TODO: this.checkWinConditions.
+    if (this.fieldOperativeBoard[row][col].state !== CHOSEN){
+      this.markChosen(row, col);
+      this.revealColor(row, col);
+      this.updateBoardCounters(row, col); //such as the number of cards left for each team, the number of guesses remaining.
+      this.checkWinConditions();
+    }
+    else{
+      console.log("cant choose this card again"); // should write this on snackbar component
+    }
   };
+
+    // Just updates the number of cards left for each team - need to check num of guesses left too
+  updateBoardCounters = (row, col) => {
+    if (this.spymasterBoard[row][col].color === "BLUE"){
+      console.log("blue card selected");
+      this.blueCardCounter--;
+    }
+    else if (this.spymasterBoard[row][col].color === "RED"){
+      console.log("red card selected");
+      this.redCardCounter--;
+    }
+    else if (this.spymasterBoard[row][col].color === "BLACK"){
+      console.log("black card selected");
+      this.blackCardCounter--;
+    }
+  }
+
+  checkWinConditions = () => {
+    if (this.blueCardCounter === 0){
+      console.log("BLUE WINS!")
+      //Change to EndScreen
+    }
+    else if (this.redCardCounter === 0){
+      console.log("RED WINS!")
+      //Change to EndScreen
+    }
+    else if (this.blackCardCounter === 0){
+      console.log("The team who touched black loses and other team wins!");
+      //Change to EndScreen
+    }
+  }
 
   /**
    * Mark the card at a given position as chosen
