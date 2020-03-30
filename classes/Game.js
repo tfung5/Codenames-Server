@@ -375,6 +375,21 @@ class Game {
   };
 
   /**
+   * Get game depending on player id
+   * @return An object containing personalized game data
+   */
+  getGameById = playerId => {
+    const player = this.getPlayerById(playerId);
+
+    return {
+      startingTeam: this.startingTeam,
+      currentTeam: this.currentTeam,
+      team: player.getTeam(),
+      board: this.getBoardByRole(player.getRole())
+    };
+  };
+
+  /**
    * Get red team
    */
   getRedTeam = () => {
@@ -419,6 +434,29 @@ class Game {
     this.fieldOperativeBoard[row][col].color = this.spymasterBoard[row][
       col
     ].color;
+  };
+
+  /**
+   * Handles 'End Turn' requests from players
+   */
+  endTurnFromPlayer = playerId => {
+    // Verifies that the player issuing it is on the appropriate team and has the appropriate role
+    const player = this.getPlayerById(playerId);
+
+    if (
+      player.getTeam() === this.currentTeam &&
+      player.getRole() === FIELD_OPERATIVE
+    ) {
+      this.endTurn();
+    }
+  };
+
+  /**
+   * Ends the current team's turn
+   */
+  endTurn = () => {
+    // Set the currentTeam to the other team
+    this.currentTeam = this.currentTeam === RED ? BLUE : RED;
   };
 }
 
