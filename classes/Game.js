@@ -378,15 +378,12 @@ class Game {
     // Just updates the number of cards left for each team - need to check num of guesses left too
   updateBoardCounters = (row, col) => {
     if (this.spymasterBoard[row][col].color === "BLUE"){
-      console.log("blue card selected");
       this.blueCardCounter--;
     }
     else if (this.spymasterBoard[row][col].color === "RED"){
-      console.log("red card selected");
       this.redCardCounter--;
     }
     else if (this.spymasterBoard[row][col].color === "BLACK"){
-      console.log("black card selected");
       this.blackCardCounter--;
     }
   }
