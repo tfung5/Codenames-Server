@@ -97,6 +97,7 @@ class Game {
     this.spymasterBoard = [];
     this.fieldOperativeBoard = [];
     this.startingTeam = "";
+    this.currentTeam = "";
 
     console.log("Board reset completed.");
   };
@@ -223,6 +224,13 @@ class Game {
   };
 
   /**
+   * Set current team
+   */
+  setCurrentTeam = team => {
+    this.currentTeam = team;
+  };
+
+  /**
    * Assign a random color to each card until the following has occurred:
    *    9 or 8 RED cards (9 if starting team, 8 if not)
    *    9 or 8 BLUE cards (9 if starting team, 8 if not)
@@ -307,6 +315,7 @@ class Game {
 
     this.resetGame();
     this.selectStartingTeam();
+    this.setCurrentTeam(this.startingTeam);
     this.generateSpymasterBoard();
     this.generateFieldOperativeBoard();
 
@@ -360,6 +369,7 @@ class Game {
   getGameByRole = role => {
     return {
       startingTeam: this.startingTeam,
+      currentTeam: this.currentTeam,
       board: this.getBoardByRole(role)
     };
   };
