@@ -49,7 +49,9 @@ const {
   CHAT_MESSAGE,
   USER_NAME,
   CHOOSE_CARD,
+  END_TURN,
   GET_GAME,
+  GET_PLAYER_INFO,
   FETCH_TEAMS,
   INDIVIDUAL_START_GAME,
   JOIN_LOBBY,
@@ -58,6 +60,7 @@ const {
   RESTART_GAME,
   START_GAME,
   UPDATE_GAME,
+  UPDATE_PLAYER_INFO,
   UPDATE_TEAMS
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
@@ -105,13 +108,25 @@ io.on("connection", socket => {
   });
 
   // Upon loading the GameScreen
+  socket.on(GET_PLAYER_INFO, () => {
+    const player = game.getPlayerById(socket.id);
+    io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
+  });
+
+  // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
-    emitUpdateGameIndividual();
+    emitUpdateGame();
   });
 
   // Upon pressing a card
   socket.on(CHOOSE_CARD, payload => {
     game.chooseCard(payload.row, payload.col);
+    emitUpdateGameAll();
+  });
+
+  // Upon anyone pressing the 'End Turn' button
+  socket.on(END_TURN, () => {
+    game.endTurnFromPlayer(socket.id);
     emitUpdateGameAll();
   });
 
@@ -131,10 +146,11 @@ io.on("connection", socket => {
     io.to(socket.id).emit(USER_NAME, player.getName());
   });
 
-  // Emit UPDATE_GAME individually
-  const emitUpdateGameIndividual = () => {
+  // Emit UPDATE_GAME
+  const emitUpdateGame = () => {
+    let res = game.getGameById(socket.id);
     // Send to the player on this socket the corresponding game information based on their role
-    io.to(socket.id).emit(UPDATE_GAME, game.getGameByRole(player.getRole()));
+    io.to(socket.id).emit(UPDATE_GAME, res);
   };
 
   // Emit UPDATE_GAME to all

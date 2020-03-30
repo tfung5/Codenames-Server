@@ -33,6 +33,15 @@ class Player {
   getRole = () => {
     return this.role;
   };
+
+  getPlayer = () => {
+    return {
+      id: this.getId(),
+      name: this.getName(),
+      team: this.getTeam(),
+      role: this.getRole()
+    };
+  };
 }
 
 module.exports = Player;

@@ -97,6 +97,7 @@ class Game {
     this.spymasterBoard = [];
     this.fieldOperativeBoard = [];
     this.startingTeam = "";
+    this.currentTeam = "";
 
     console.log("Board reset completed.");
   };
@@ -223,6 +224,13 @@ class Game {
   };
 
   /**
+   * Set current team
+   */
+  setCurrentTeam = team => {
+    this.currentTeam = team;
+  };
+
+  /**
    * Assign a random color to each card until the following has occurred:
    *    9 or 8 RED cards (9 if starting team, 8 if not)
    *    9 or 8 BLUE cards (9 if starting team, 8 if not)
@@ -307,6 +315,7 @@ class Game {
 
     this.resetGame();
     this.selectStartingTeam();
+    this.setCurrentTeam(this.startingTeam);
     this.generateSpymasterBoard();
     this.generateFieldOperativeBoard();
 
@@ -360,7 +369,23 @@ class Game {
   getGameByRole = role => {
     return {
       startingTeam: this.startingTeam,
+      currentTeam: this.currentTeam,
       board: this.getBoardByRole(role)
+    };
+  };
+
+  /**
+   * Get game depending on player id
+   * @return An object containing personalized game data
+   */
+  getGameById = playerId => {
+    const player = this.getPlayerById(playerId);
+
+    return {
+      startingTeam: this.startingTeam,
+      currentTeam: this.currentTeam,
+      team: player.getTeam(),
+      board: this.getBoardByRole(player.getRole())
     };
   };
 
@@ -409,6 +434,29 @@ class Game {
     this.fieldOperativeBoard[row][col].color = this.spymasterBoard[row][
       col
     ].color;
+  };
+
+  /**
+   * Handles 'End Turn' requests from players
+   */
+  endTurnFromPlayer = playerId => {
+    // Verifies that the player issuing it is on the appropriate team and has the appropriate role
+    const player = this.getPlayerById(playerId);
+
+    if (
+      player.getTeam() === this.currentTeam &&
+      player.getRole() === FIELD_OPERATIVE
+    ) {
+      this.endTurn();
+    }
+  };
+
+  /**
+   * Ends the current team's turn
+   */
+  endTurn = () => {
+    // Set the currentTeam to the other team
+    this.currentTeam = this.currentTeam === RED ? BLUE : RED;
   };
 }
 
