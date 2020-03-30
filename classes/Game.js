@@ -10,69 +10,7 @@ const {
 } = require("../constants/Cards");
 const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
 
-const wordList = [
-  "Server",
-  "Well",
-  "Screen",
-  "Fair",
-  "Play",
-  "Tooth",
-  "Marble",
-  "Staff",
-  "Dinosaur",
-  "Bill",
-  "Cat",
-  "Shot",
-  "Pitch",
-  "King",
-  "Bond",
-  "Pan",
-  "Greece",
-  "Square",
-  "Deck",
-  "Buffalo",
-  "Spike",
-  "Scientist",
-  "Center",
-  "Chick",
-  "Vacuum",
-  "Atlantis",
-  "Unicorn",
-  "Spy",
-  "Undertaker",
-  "Mail",
-  "Sock",
-  "Nut",
-  "Loch",
-  "Ness",
-  "Log",
-  "Horse",
-  "Pirate",
-  "Berlin",
-  "Face",
-  "Platypus",
-  "Stick",
-  "Port",
-  "Disease",
-  "Chest",
-  "Yard",
-  "Box",
-  "Mount",
-  "Compound",
-  "Slug",
-  "Ship",
-  "Dice",
-  "Watch",
-  "Lead",
-  "Space",
-  "Hook",
-  "Flute",
-  "Carrot",
-  "Tower",
-  "Poison",
-  "Death",
-  "Stock"
-];
+const generateWordList = require("../utils/words");
 
 class Game {
   constructor() {
@@ -95,6 +33,7 @@ class Game {
   resetGame = () => {
     console.log("Board reset starting.");
 
+    this.wordList = generateWordList();
     this.spymasterBoard = [];
     this.fieldOperativeBoard = [];
     this.startingTeam = "";
@@ -306,7 +245,7 @@ class Game {
 
     for (let row = 0; row < 5; ++row) {
       for (let col = 0; col < 5; ++col) {
-        boardCopy[row][col].word = wordList[count++];
+        boardCopy[row][col].word = this.wordList[count++];
       }
     }
 
