@@ -6,7 +6,6 @@
 
 const app = require("./app");
 const http = require("http");
-const debug = require("debug")("tutorial:server");
 const normalizePort = require("./utils/normalizePort");
 const onError = require("./utils/onError");
 const onListening = require("./utils/onListening");
@@ -38,8 +37,6 @@ const io = require("socket.io").listen(server);
 /**
  * Game data
  */
-let redTeam = new Array(4).fill(null);
-let blueTeam = new Array(4).fill(null);
 let game = new Game();
 
 /**
@@ -65,7 +62,6 @@ const {
   UPDATE_TEAMS
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
-const { BLUE, RED } = require("./constants/Cards");
 
 /**
  * Start socket server with `on` method.
