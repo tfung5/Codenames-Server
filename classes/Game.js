@@ -39,6 +39,7 @@ class Game {
     this.startingTeam = "";
     this.currentTeam = "";
     this.clue = {};
+    this.guessCounter = null;
 
     console.log("Board reset completed.");
   };
@@ -323,6 +324,7 @@ class Game {
       currentTeam: this.currentTeam,
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
+      guessCounter: this.guessCounter,
       board: this.getBoardByRole(role)
     };
   };
@@ -339,6 +341,7 @@ class Game {
       currentTeam: this.currentTeam,
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
+      guessCounter: this.guessCounter,
       team: player.getTeam(),
       board: this.getBoardByRole(player.getRole())
     };
@@ -364,18 +367,15 @@ class Game {
    * @param {int} The column of a given position
    */
   chooseCard = (row, col) => {
-    if (this.fieldOperativeBoard[row][col].state !== CHOSEN){
       this.markChosen(row, col);
       this.revealColor(row, col);
-      this.updateBoardCounters(row, col); //such as the number of cards left for each team, the number of guesses remaining.
+      this.updateBoardCounters(row, col);
       this.checkWinConditions();
-    }
-    else{
-      console.log("cant choose this card again"); // should write this on snackbar component
-    }
+      //this.checkEndOfTurn() -> check if guesses remaining === 0 or when a team selects a card that isn't their color?
+
   };
 
-    // Just updates the number of cards left for each team - need to check num of guesses left too
+    // Just updates the number of cards left for each team and number of guesses remaining
   updateBoardCounters = (row, col) => {
     if (this.spymasterBoard[row][col].color === "BLUE"){
       this.blueCardCounter--;
@@ -386,6 +386,7 @@ class Game {
     else if (this.spymasterBoard[row][col].color === "BLACK"){
       this.blackCardCounter--;
     }
+    this.guessCounter--;
   }
 
   checkWinConditions = () => {
@@ -453,6 +454,7 @@ class Game {
    */
   setClue = clue => {
     this.clue = clue;
+    this.guessCounter = clue.number + 1;
   };
 }
 
