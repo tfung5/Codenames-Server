@@ -371,7 +371,7 @@ class Game {
       this.revealColor(row, col);
       this.updateBoardCounters(row, col);
       this.checkWinConditions();
-      //this.checkEndOfTurn() -> check if guesses remaining === 0 or when a team selects a card that isn't their color?
+      this.checkEndOfTurn(row, col);
 
   };
 
@@ -401,6 +401,13 @@ class Game {
     else if (this.blackCardCounter === 0){
       console.log("The team who touched black loses and other team wins!");
       //Change to EndScreen
+    }
+  }
+
+  checkEndOfTurn = (row, col) => {
+    let teamColor = this.currentTeam === RED ? "RED" : "BLUE";
+    if (this.guessCounter === 0 || this.spymasterBoard[row][col].color !== teamColor){
+      this.endTurn();
     }
   }
 
