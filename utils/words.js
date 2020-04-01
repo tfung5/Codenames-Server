@@ -12,16 +12,6 @@ getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-generateWordsObject = wordBank => {
-  let words = {};
-
-  for (let i = 0; i < wordBank.length; ++i) {
-    words[i] = wordBank[i];
-  }
-
-  return words;
-};
-
 generateWordList = () => {
   const MAX_WORD_LENGTH = 10;
   let words = [];
