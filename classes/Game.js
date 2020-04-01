@@ -40,6 +40,7 @@ class Game {
     this.currentTeam = "";
     this.clue = {};
     this.guessCounter = null;
+    this.winningTeam = "";
 
     console.log("Board reset completed.");
   };
@@ -198,7 +199,7 @@ class Game {
     let numBlackCards = 1;
     this.blueCardCounter = numBlueCards;
     this.redCardCounter = numRedCards;
-    this.blackCardCounter = numBlueCards;
+    this.blackCardCounter = numBlackCards;
     var row, col;
 
     //RED CARDS
@@ -325,6 +326,7 @@ class Game {
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
       guessCounter: this.guessCounter,
+      winningTeam: this.winningTeam,
       board: this.getBoardByRole(role)
     };
   };
@@ -342,6 +344,7 @@ class Game {
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
       guessCounter: this.guessCounter,
+      winningTeam: this.winningTeam,
       team: player.getTeam(),
       board: this.getBoardByRole(player.getRole())
     };
@@ -384,6 +387,7 @@ class Game {
       this.redCardCounter--;
     }
     else if (this.spymasterBoard[row][col].color === "BLACK"){
+      console.log("blackCard picked");
       this.blackCardCounter--;
     }
     this.guessCounter--;
@@ -391,16 +395,20 @@ class Game {
 
   checkWinConditions = () => {
     if (this.blueCardCounter === 0){
-      console.log("BLUE WINS!")
-      //Change to EndScreen
+      console.log("BLUE WINS!");
+      this.winningTeam = "BLUE";
+      console.log(this.winningTeam);
     }
     else if (this.redCardCounter === 0){
-      console.log("RED WINS!")
-      //Change to EndScreen
+      console.log("RED WINS!");
+      this.winningTeam = "RED";
+      console.log(this.winningTeam);
     }
     else if (this.blackCardCounter === 0){
-      console.log("The team who touched black loses and other team wins!");
-      //Change to EndScreen
+      let teamColor = this.currentTeam === RED ? "BLUE" : "RED";
+      console.log(teamColor + " WINS!");
+      this.winningTeam = teamColor;
+      console.log(this.winningTeam);
     }
   }
 
