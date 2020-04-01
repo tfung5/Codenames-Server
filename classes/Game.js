@@ -41,6 +41,7 @@ class Game {
     this.clue = {};
     this.guessCounter = null;
     this.winningTeam = "";
+    this.chatHistory = [];
 
     console.log("Board reset completed.");
   };
@@ -454,6 +455,15 @@ class Game {
       this.endTurn();
     }
   };
+
+  saveChatMessages = payload => {
+    this.chatHistory = [...this.chatHistory, payload];
+  }
+
+  getChatMessages = () => {
+    console.log("called getChatMessages to get chat History")
+    return this.chatHistory;
+  }
 
   /**
    * Ends the current team's turn
