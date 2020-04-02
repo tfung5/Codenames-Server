@@ -44,9 +44,9 @@ let game = new Game();
  */
 const {
   CHAT_MESSAGE,
-  USER_NAME,
   CHOOSE_CARD,
   END_TURN,
+  GET_MESSAGES,
   GET_GAME,
   GET_PLAYER_INFO,
   FETCH_TEAMS,
@@ -134,8 +134,11 @@ io.on("connection", socket => {
   });
 
   // Handle CHAT_MESSAGE
-  socket.on(CHAT_MESSAGE, payload => {
-    io.emit(CHAT_MESSAGE, payload);
+    socket.on(CHAT_MESSAGE, payload => {
+    let chatHistory = []
+    game.saveChatMessages(payload);
+	  chatHistory = game.getChatMessages();
+    io.emit(CHAT_MESSAGE, payload );
   });
 
   /**
@@ -148,10 +151,17 @@ io.on("connection", socket => {
     emitUpdateGameAll();
   });
 
-  // Return a player's name for chat
-  socket.on(USER_NAME, () => {
-    io.to(socket.id).emit(USER_NAME, player.getName());
+  // Upon loading the GameScreen
+  socket.on(GET_MESSAGES, () => {
+    emitChatMessages();
   });
+
+  //Emit CHAT_MESSAGE -> send current messages
+  const emitChatMessages = () => {
+    let chatHistory = game.getChatMessages();
+    // Send to the player on this socket the corresponding game information based on their role
+    io.to(socket.id).emit(GET_MESSAGES, chatHistory);
+  };
 
   // Emit UPDATE_GAME
   const emitUpdateGame = () => {

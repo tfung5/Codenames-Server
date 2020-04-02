@@ -41,6 +41,7 @@ class Game {
     this.clue = {};
     this.guessCounter = null;
     this.winningTeam = "";
+    this.chatHistory = [];
 
     console.log("Board reset completed.");
   };
@@ -387,7 +388,6 @@ class Game {
       this.redCardCounter--;
     }
     else if (this.spymasterBoard[row][col].color === "BLACK"){
-      console.log("blackCard picked");
       this.blackCardCounter--;
     }
     this.guessCounter--;
@@ -395,20 +395,14 @@ class Game {
 
   checkWinConditions = () => {
     if (this.blueCardCounter === 0){
-      console.log("BLUE WINS!");
       this.winningTeam = "BLUE";
-      console.log(this.winningTeam);
     }
     else if (this.redCardCounter === 0){
-      console.log("RED WINS!");
       this.winningTeam = "RED";
-      console.log(this.winningTeam);
     }
     else if (this.blackCardCounter === 0){
       let teamColor = this.currentTeam === RED ? "BLUE" : "RED";
-      console.log(teamColor + " WINS!");
       this.winningTeam = teamColor;
-      console.log(this.winningTeam);
     }
   }
 
@@ -454,6 +448,14 @@ class Game {
       this.endTurn();
     }
   };
+
+  saveChatMessages = payload => {
+    this.chatHistory = [...this.chatHistory, payload];
+  }
+
+  getChatMessages = () => {
+    return this.chatHistory;
+  }
 
   /**
    * Ends the current team's turn
