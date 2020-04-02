@@ -138,7 +138,6 @@ io.on("connection", socket => {
     let chatHistory = []
     game.saveChatMessages(payload);
 	  chatHistory = game.getChatMessages();
-    console.log(chatHistory);
     io.emit(CHAT_MESSAGE, payload );
   });
 

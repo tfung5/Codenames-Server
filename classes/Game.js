@@ -388,7 +388,6 @@ class Game {
       this.redCardCounter--;
     }
     else if (this.spymasterBoard[row][col].color === "BLACK"){
-      console.log("blackCard picked");
       this.blackCardCounter--;
     }
     this.guessCounter--;
@@ -396,20 +395,14 @@ class Game {
 
   checkWinConditions = () => {
     if (this.blueCardCounter === 0){
-      console.log("BLUE WINS!");
       this.winningTeam = "BLUE";
-      console.log(this.winningTeam);
     }
     else if (this.redCardCounter === 0){
-      console.log("RED WINS!");
       this.winningTeam = "RED";
-      console.log(this.winningTeam);
     }
     else if (this.blackCardCounter === 0){
       let teamColor = this.currentTeam === RED ? "BLUE" : "RED";
-      console.log(teamColor + " WINS!");
       this.winningTeam = teamColor;
-      console.log(this.winningTeam);
     }
   }
 
@@ -461,7 +454,6 @@ class Game {
   }
 
   getChatMessages = () => {
-    console.log("called getChatMessages to get chat History")
     return this.chatHistory;
   }
 
