@@ -463,6 +463,8 @@ class Game {
   endTurn = () => {
     // Set the currentTeam to the other team
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
+
+    this.clue = {}; // Clear the current clue
   };
 
   /**
