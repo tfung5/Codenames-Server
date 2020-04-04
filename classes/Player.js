@@ -10,7 +10,7 @@ class Player {
     return this.id;
   };
 
-  setName = name => {
+  setName = (name) => {
     this.name = name;
   };
 
@@ -18,7 +18,7 @@ class Player {
     return this.name;
   };
 
-  setTeam = team => {
+  setTeam = (team) => {
     this.team = team;
   };
 
@@ -26,7 +26,7 @@ class Player {
     return this.team;
   };
 
-  setRole = role => {
+  setRole = (role) => {
     this.role = role;
   };
 
@@ -39,7 +39,7 @@ class Player {
       id: this.getId(),
       name: this.getName(),
       team: this.getTeam(),
-      role: this.getRole()
+      role: this.getRole(),
     };
   };
 }

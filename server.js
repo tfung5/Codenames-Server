@@ -59,7 +59,7 @@ const {
   START_GAME,
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
-  UPDATE_TEAMS
+  UPDATE_TEAMS,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
@@ -68,14 +68,14 @@ const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
  * Listen for action types
  * Emit action payload
  */
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   console.log("A user connected :D");
 
   // Upon entering the HomeScreen
   let player = new Player(socket.id); // Create Player object
 
   // Upon pressing the 'Join Lobby' button
-  socket.on(JOIN_LOBBY, payload => {
+  socket.on(JOIN_LOBBY, (payload) => {
     player.setName(payload); // Set Player name
   });
 
@@ -85,7 +85,7 @@ io.on("connection", socket => {
   });
 
   // Upon joining a slot
-  socket.on(JOIN_SLOT, payload => {
+  socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
     game.insertPlayerIntoSlot(player, team, index);
     emitUpdateTeams();
@@ -116,7 +116,7 @@ io.on("connection", socket => {
   });
 
   // Upon pressing a card
-  socket.on(CHOOSE_CARD, payload => {
+  socket.on(CHOOSE_CARD, (payload) => {
     game.chooseCard(payload.row, payload.col);
     emitUpdateGameAll();
   });
@@ -134,7 +134,7 @@ io.on("connection", socket => {
   });
 
   // Handle CHAT_MESSAGE
-  socket.on(CHAT_MESSAGE, payload => {
+  socket.on(CHAT_MESSAGE, (payload) => {
     let chatHistory = [];
     game.saveChatMessages(payload);
     chatHistory = game.getChatMessages();
@@ -146,7 +146,7 @@ io.on("connection", socket => {
    * Expected payload:
    * { word: "string", number: int }
    */
-  socket.on(SET_CLUE, payload => {
+  socket.on(SET_CLUE, (payload) => {
     game.setClue(payload);
     emitUpdateGameAll();
   });
@@ -183,12 +183,12 @@ io.on("connection", socket => {
   const emitUpdateTeams = () => {
     io.emit(UPDATE_TEAMS, {
       redTeam: game.getRedTeam(),
-      blueTeam: game.getBlueTeam()
+      blueTeam: game.getBlueTeam(),
     });
   };
 
   // Join appropriate room depending on role
-  const joinRoomByRole = role => {
+  const joinRoomByRole = (role) => {
     if (role === FIELD_OPERATIVE) {
       socket.join("lobby-fieldOperatives");
     } else {
@@ -205,7 +205,7 @@ server.listen(port, () => {
   console.log("Server running on port:" + port);
   game.startGame();
 });
-server.on("Error", err => onError(err, port));
+server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));
 
 module.exports = server;

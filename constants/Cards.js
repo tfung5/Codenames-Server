@@ -4,5 +4,5 @@ module.exports = {
   GRAY: "GRAY",
   BLACK: "BLACK",
   CHOSEN: "CHOSEN",
-  UNCHOSEN: "UNCHOSEN"
+  UNCHOSEN: "UNCHOSEN",
 };
