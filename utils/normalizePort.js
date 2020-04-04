@@ -2,7 +2,7 @@
  * Normalize a port into a number, string, or false.
  */
 
-module.exports = val => {
+module.exports = (val) => {
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {

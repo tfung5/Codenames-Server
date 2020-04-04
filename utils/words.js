@@ -440,7 +440,7 @@ const wordBank = [
   "Rose",
   "Change",
   "Cap",
-  "Triangle"
+  "Triangle",
 ];
 
 module.exports = generateWordList;

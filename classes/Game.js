@@ -6,7 +6,7 @@ const {
   BLACK,
   GRAY,
   CHOSEN,
-  UNCHOSEN
+  UNCHOSEN,
 } = require("../constants/Cards");
 const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
 
@@ -71,7 +71,7 @@ class Game {
   /**
    * Erase player if on either team
    */
-  erasePlayerFromEitherTeam = targetId => {
+  erasePlayerFromEitherTeam = (targetId) => {
     this.erasePlayerFromTeam(targetId, this.redTeam);
     this.erasePlayerFromTeam(targetId, this.blueTeam);
   };
@@ -96,7 +96,7 @@ class Game {
     this.createPlayersObject(); // Create player lookup object
   };
 
-  setPlayerInfoForTeam = team => {
+  setPlayerInfoForTeam = (team) => {
     for (let i = 0; i < team.length; ++i) {
       if (team[i]) {
         // Set team
@@ -131,7 +131,7 @@ class Game {
     }
   };
 
-  getPlayerById = targetId => {
+  getPlayerById = (targetId) => {
     return this.players[targetId];
   };
 
@@ -152,7 +152,7 @@ class Game {
           color: GRAY, // Color to be assigned. GRAY by default.
           state: UNCHOSEN,
           row,
-          col
+          col,
         });
       }
       board.push(currRow);
@@ -177,7 +177,7 @@ class Game {
   /**
    * Set current team
    */
-  setCurrentTeam = team => {
+  setCurrentTeam = (team) => {
     this.currentTeam = team;
   };
 
@@ -190,7 +190,7 @@ class Game {
    * @param {Board} A board whose colors need to be assigned.
    * @return {Board} A board whose colors have been assigned.
    */
-  assignColors = board => {
+  assignColors = (board) => {
     console.log("Color assignment starting.");
 
     let boardCopy = clonedeep(board);
@@ -243,7 +243,7 @@ class Game {
    * @param {Board} A board whose words need to be assigned.
    * @return {Board} A board whose words have been assigned.
    */
-  assignWords = board => {
+  assignWords = (board) => {
     console.log("Word assignment starting.");
 
     let boardCopy = clonedeep(board);
@@ -308,7 +308,7 @@ class Game {
    * If field operative, return the board with information obscured.
    * @return {Board} The current board
    */
-  getBoardByRole = role => {
+  getBoardByRole = (role) => {
     if (role === SPYMASTER) {
       return this.spymasterBoard;
     } else {
@@ -320,7 +320,7 @@ class Game {
    * Get all game information
    * @return An object containing all game data
    */
-  getGameByRole = role => {
+  getGameByRole = (role) => {
     return {
       startingTeam: this.startingTeam,
       currentTeam: this.currentTeam,
@@ -328,7 +328,7 @@ class Game {
       blueCardCounter: this.blueCardCounter,
       guessCounter: this.guessCounter,
       winningTeam: this.winningTeam,
-      board: this.getBoardByRole(role)
+      board: this.getBoardByRole(role),
     };
   };
 
@@ -336,7 +336,7 @@ class Game {
    * Get game depending on player id
    * @return An object containing personalized game data
    */
-  getGameById = playerId => {
+  getGameById = (playerId) => {
     const player = this.getPlayerById(playerId);
 
     return {
@@ -347,7 +347,7 @@ class Game {
       guessCounter: this.guessCounter,
       winningTeam: this.winningTeam,
       team: player.getTeam(),
-      board: this.getBoardByRole(player.getRole())
+      board: this.getBoardByRole(player.getRole()),
     };
   };
 
@@ -435,7 +435,7 @@ class Game {
   /**
    * Handles 'End Turn' requests from players
    */
-  endTurnFromPlayer = playerId => {
+  endTurnFromPlayer = (playerId) => {
     // Verifies that the player issuing it is on the appropriate team and has the appropriate role
     const player = this.getPlayerById(playerId);
 
@@ -447,7 +447,7 @@ class Game {
     }
   };
 
-  saveChatMessages = payload => {
+  saveChatMessages = (payload) => {
     this.chatHistory = [...this.chatHistory, payload];
   };
 
@@ -467,7 +467,7 @@ class Game {
    * Sets the given clue
    * @param {Object} containing a word and a number
    */
-  setClue = clue => {
+  setClue = (clue) => {
     this.clue = clue;
     this.guessCounter = clue.number + 1;
   };
