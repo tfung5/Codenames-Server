@@ -1,13 +1,15 @@
+const { RED } = require("../constants/Cards");
+
 const presetBoard = [
   [
-    { word: "Leprechaun", color: "GRAY", state: "UNCHOSEN", row: 0, col: 0 },
+    { word: "Leprechaun", color: "BLUE", state: "UNCHOSEN", row: 0, col: 0 },
     { word: "Sniper", color: "RED", state: "UNCHOSEN", row: 0, col: 1 },
     { word: "Volcano", color: "RED", state: "UNCHOSEN", row: 0, col: 2 },
     { word: "Undertaker", color: "GRAY", state: "UNCHOSEN", row: 0, col: 3 },
     { word: "Antarctica", color: "BLUE", state: "UNCHOSEN", row: 0, col: 4 },
   ],
   [
-    { word: "Pumpkin", color: "GRAY", state: "UNCHOSEN", row: 1, col: 0 },
+    { word: "Pumpkin", color: "RED", state: "UNCHOSEN", row: 1, col: 0 },
     { word: "Telescope", color: "GRAY", state: "UNCHOSEN", row: 1, col: 1 },
     {
       word: "Alien",
@@ -17,7 +19,7 @@ const presetBoard = [
       col: 2,
     },
     { word: "Greece", color: "RED", state: "UNCHOSEN", row: 1, col: 3 },
-    { word: "Box", color: "GRAY", state: "UNCHOSEN", row: 1, col: 4 },
+    { word: "Box", color: "RED", state: "UNCHOSEN", row: 1, col: 4 },
   ],
   [
     { word: "Dessert", color: "BLUE", state: "UNCHOSEN", row: 2, col: 0 },
@@ -54,9 +56,22 @@ const presetBoard = [
   [
     { word: "Plate", color: "GRAY", state: "UNCHOSEN", row: 4, col: 0 },
     { word: "Space", color: "BLUE", state: "UNCHOSEN", row: 4, col: 1 },
-    { word: "Happy", color: "GRAY", state: "UNCHOSEN", row: 4, col: 2 },
+    { word: "Happy", color: "RED", state: "UNCHOSEN", row: 4, col: 2 },
     { word: "Jester", color: "GRAY", state: "UNCHOSEN", row: 4, col: 3 },
     { word: "Riddle", color: "BLUE", state: "UNCHOSEN", row: 4, col: 4 },
   ],
 ];
-module.exports = presetBoard;
+
+const cardCounters = {
+  redCardCounter: 9,
+  blueCardCounter: 8,
+  blackCardCounter: 1,
+};
+
+const startingTeam = RED;
+
+module.exports = {
+  presetBoard,
+  cardCounters,
+  startingTeam,
+};
