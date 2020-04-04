@@ -53,6 +53,7 @@ const {
   INDIVIDUAL_START_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
+  LOAD_PRESET_BOARD,
   REQUEST_INDIVIDUAL_START_GAME,
   RESTART_GAME,
   SET_CLUE,
@@ -113,6 +114,12 @@ io.on("connection", (socket) => {
   // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
     emitUpdateGame();
+  });
+
+  // Handle LOAD_PRESET_BOARD
+  socket.on(LOAD_PRESET_BOARD, () => {
+    game.loadPresetBoard();
+    emitUpdateGameAll();
   });
 
   // Upon pressing a card

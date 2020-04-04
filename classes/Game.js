@@ -11,6 +11,7 @@ const {
 const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
 
 const generateWordList = require("../utils/words");
+const presetBoard = require("../utils/presetBoard");
 
 class Game {
   constructor() {
@@ -288,6 +289,8 @@ class Game {
     board = this.assignWords(board);
 
     this.spymasterBoard = board;
+
+    console.log(board);
   };
 
   generateFieldOperativeBoard = () => {
@@ -300,6 +303,19 @@ class Game {
     }
 
     this.fieldOperativeBoard = boardCopy;
+  };
+
+  // Exactly like startGame except that the spymaster board is preset
+  loadPresetBoard = () => {
+    console.log("Preset board loading.");
+
+    this.resetGame();
+    this.selectStartingTeam();
+    this.setCurrentTeam(this.startingTeam);
+    this.spymasterBoard = presetBoard;
+    this.generateFieldOperativeBoard();
+
+    console.log("Preset board loaded.");
   };
 
   /**
