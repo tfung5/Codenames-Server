@@ -327,6 +327,7 @@ class Game {
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
       guessCounter: this.guessCounter,
+      clue: this.clue,
       winningTeam: this.winningTeam,
       board: this.getBoardByRole(role),
     };
@@ -345,6 +346,7 @@ class Game {
       redCardCounter: this.redCardCounter,
       blueCardCounter: this.blueCardCounter,
       guessCounter: this.guessCounter,
+      clue: this.clue,
       winningTeam: this.winningTeam,
       team: player.getTeam(),
       board: this.getBoardByRole(player.getRole()),
@@ -461,6 +463,8 @@ class Game {
   endTurn = () => {
     // Set the currentTeam to the other team
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
+
+    this.clue = {}; // Clear the current clue
   };
 
   /**
