@@ -1,3 +1,5 @@
+const { RED } = require("../constants/Cards");
+
 const presetBoard = [
   [
     { word: "Leprechaun", color: "BLUE", state: "UNCHOSEN", row: 0, col: 0 },
@@ -66,7 +68,10 @@ const cardCounters = {
   blackCardCounter: 1,
 };
 
+const startingTeam = RED;
+
 module.exports = {
   presetBoard,
   cardCounters,
+  startingTeam,
 };
