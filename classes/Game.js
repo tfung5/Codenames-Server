@@ -371,47 +371,45 @@ class Game {
    * @param {int} The column of a given position
    */
   chooseCard = (row, col) => {
-      this.markChosen(row, col);
-      this.revealColor(row, col);
-      this.updateBoardCounters(row, col);
-      this.checkWinConditions();
-      this.checkEndOfTurn(row, col);
-
+    this.markChosen(row, col);
+    this.revealColor(row, col);
+    this.updateBoardCounters(row, col);
+    this.checkWinConditions();
+    this.checkEndOfTurn(row, col);
   };
 
-    // Just updates the number of cards left for each team and number of guesses remaining
+  // Just updates the number of cards left for each team and number of guesses remaining
   updateBoardCounters = (row, col) => {
-    if (this.spymasterBoard[row][col].color === "BLUE"){
+    if (this.spymasterBoard[row][col].color === "BLUE") {
       this.blueCardCounter--;
-    }
-    else if (this.spymasterBoard[row][col].color === "RED"){
+    } else if (this.spymasterBoard[row][col].color === "RED") {
       this.redCardCounter--;
-    }
-    else if (this.spymasterBoard[row][col].color === "BLACK"){
+    } else if (this.spymasterBoard[row][col].color === "BLACK") {
       this.blackCardCounter--;
     }
     this.guessCounter--;
-  }
+  };
 
   checkWinConditions = () => {
-    if (this.blueCardCounter === 0){
+    if (this.blueCardCounter === 0) {
       this.winningTeam = "BLUE";
-    }
-    else if (this.redCardCounter === 0){
+    } else if (this.redCardCounter === 0) {
       this.winningTeam = "RED";
-    }
-    else if (this.blackCardCounter === 0){
+    } else if (this.blackCardCounter === 0) {
       let teamColor = this.currentTeam === RED ? "BLUE" : "RED";
       this.winningTeam = teamColor;
     }
-  }
+  };
 
   checkEndOfTurn = (row, col) => {
     let teamColor = this.currentTeam === RED ? "RED" : "BLUE";
-    if (this.guessCounter === 0 || this.spymasterBoard[row][col].color !== teamColor){
+    if (
+      this.guessCounter === 0 ||
+      this.spymasterBoard[row][col].color !== teamColor
+    ) {
       this.endTurn();
     }
-  }
+  };
 
   /**
    * Mark the card at a given position as chosen
@@ -451,11 +449,11 @@ class Game {
 
   saveChatMessages = payload => {
     this.chatHistory = [...this.chatHistory, payload];
-  }
+  };
 
   getChatMessages = () => {
     return this.chatHistory;
-  }
+  };
 
   /**
    * Ends the current team's turn

@@ -134,11 +134,11 @@ io.on("connection", socket => {
   });
 
   // Handle CHAT_MESSAGE
-    socket.on(CHAT_MESSAGE, payload => {
-    let chatHistory = []
+  socket.on(CHAT_MESSAGE, payload => {
+    let chatHistory = [];
     game.saveChatMessages(payload);
-	  chatHistory = game.getChatMessages();
-    io.emit(CHAT_MESSAGE, payload );
+    chatHistory = game.getChatMessages();
+    io.emit(CHAT_MESSAGE, payload);
   });
 
   /**
