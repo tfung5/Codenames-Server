@@ -11,7 +11,7 @@ const {
 const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
 
 const generateWordList = require("../utils/words");
-const presetBoard = require("../utils/presetBoard");
+const { presetBoard, cardCounters } = require("../utils/presetBoard");
 
 class Game {
   constructor() {
@@ -40,6 +40,9 @@ class Game {
     this.startingTeam = "";
     this.currentTeam = "";
     this.clue = {};
+    this.blueCardCounter = null;
+    this.redCardCounter = null;
+    this.blackCardCounter = null;
     this.guessCounter = null;
     this.winningTeam = "";
     this.chatHistory = [];
@@ -314,6 +317,11 @@ class Game {
     this.setCurrentTeam(this.startingTeam);
     this.spymasterBoard = presetBoard;
     this.generateFieldOperativeBoard();
+
+    // Set preset card counters
+    this.redCardCounter = cardCounters.redCardCounter;
+    this.blueCardCounter = cardCounters.blueCardCounter;
+    this.blackCardCounter = cardCounters.blackCardCounter;
 
     console.log("Preset board loaded.");
   };
