@@ -398,13 +398,18 @@ class Game {
    * A player chooses a card to flip over
    * @param {int} The row of a given position
    * @param {int} The column of a given position
+   * @return {boolean} Whether or not the guess was correct
    */
   chooseCard = (row, col) => {
+    let chooserTeam = this.currentTeam; // Temporarily saves the current team
+
     this.markChosen(row, col);
-    this.revealColor(row, col);
+    let trueColor = this.revealColor(row, col);
     this.updateBoardCounters(row, col);
     this.checkWinConditions();
     this.checkEndOfTurn(row, col);
+
+    return trueColor === chooserTeam;
   };
 
   // Just updates the number of cards left for each team and number of guesses remaining
@@ -454,11 +459,14 @@ class Game {
    * Reveal the color of the card at a given position
    * @param {int} The row of a given position
    * @param {int} The column of a given position
+   * @return {string} The color of the card that was just revealed
    */
   revealColor = (row, col) => {
-    this.fieldOperativeBoard[row][col].color = this.spymasterBoard[row][
-      col
-    ].color;
+    let trueColor = this.spymasterBoard[row][col].color;
+
+    this.fieldOperativeBoard[row][col].color = trueColor;
+
+    return trueColor;
   };
 
   /**

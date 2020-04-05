@@ -123,9 +123,10 @@ io.on("connection", (socket) => {
   });
 
   // Upon pressing a card
-  socket.on(CHOOSE_CARD, (payload) => {
-    game.chooseCard(payload.row, payload.col);
+  socket.on(CHOOSE_CARD, (payload, callback) => {
+    let res = game.chooseCard(payload.row, payload.col);
     emitUpdateGameAll();
+    callback(res); // Sends the answer back to the client whether the guess was correct or not
   });
 
   // Upon anyone pressing the 'End Turn' button
