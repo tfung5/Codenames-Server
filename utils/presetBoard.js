@@ -2,14 +2,14 @@ const { RED } = require("../constants/Cards");
 
 const presetBoard = [
   [
-    { word: "Leprechaun", color: "BLUE", state: "UNCHOSEN", row: 0, col: 0 },
+    { word: "Leprechaun", color: "RED", state: "UNCHOSEN", row: 0, col: 0 },
     { word: "Sniper", color: "RED", state: "UNCHOSEN", row: 0, col: 1 },
     { word: "Volcano", color: "RED", state: "UNCHOSEN", row: 0, col: 2 },
     { word: "Undertaker", color: "GRAY", state: "UNCHOSEN", row: 0, col: 3 },
     { word: "Antarctica", color: "BLUE", state: "UNCHOSEN", row: 0, col: 4 },
   ],
   [
-    { word: "Pumpkin", color: "RED", state: "UNCHOSEN", row: 1, col: 0 },
+    { word: "Pumpkin", color: "BLUE", state: "UNCHOSEN", row: 1, col: 0 },
     { word: "Telescope", color: "GRAY", state: "UNCHOSEN", row: 1, col: 1 },
     {
       word: "Alien",
