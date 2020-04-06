@@ -7,7 +7,11 @@ class Player {
   }
 
   getId = () => {
-    return this.id;
+    try {
+      return this.id;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   setName = (name) => {
@@ -15,7 +19,11 @@ class Player {
   };
 
   getName = () => {
-    return this.name;
+    try {
+      return this.name;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   setTeam = (team) => {
@@ -23,7 +31,11 @@ class Player {
   };
 
   getTeam = () => {
-    return this.team;
+    try {
+      return this.team;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   setRole = (role) => {
@@ -31,16 +43,24 @@ class Player {
   };
 
   getRole = () => {
-    return this.role;
+    try {
+      return this.role;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   getPlayer = () => {
-    return {
-      id: this.getId(),
-      name: this.getName(),
-      team: this.getTeam(),
-      role: this.getRole(),
-    };
+    try {
+      return {
+        id: this.getId(),
+        name: this.getName(),
+        team: this.getTeam(),
+        role: this.getRole(),
+      };
+    } catch (err) {
+      console.log(err);
+    }
   };
 }
 

@@ -199,7 +199,7 @@ io.on("connection", (socket) => {
   const joinRoomByRole = (role) => {
     if (role === FIELD_OPERATIVE) {
       socket.join("lobby-fieldOperatives");
-    } else {
+    } else if (role === SPYMASTER) {
       socket.join("lobby-spymasters");
     }
   };
