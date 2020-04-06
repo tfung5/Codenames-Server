@@ -316,7 +316,7 @@ class Game {
 
     this.resetGame();
     this.setCurrentTeam(startingTeam); // Set preset starting team
-    this.spymasterBoard = presetBoard;
+    this.spymasterBoard = clonedeep(presetBoard);
     this.generateFieldOperativeBoard();
 
     // Set preset card counters
