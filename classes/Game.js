@@ -365,17 +365,19 @@ class Game {
   getGameById = (playerId) => {
     const player = this.getPlayerById(playerId);
 
-    return {
-      startingTeam: this.startingTeam,
-      currentTeam: this.currentTeam,
-      redCardCounter: this.redCardCounter,
-      blueCardCounter: this.blueCardCounter,
-      guessCounter: this.guessCounter,
-      clue: this.clue,
-      winningTeam: this.winningTeam,
-      team: player.getTeam(),
-      board: this.getBoardByRole(player.getRole()),
-    };
+    if (player) {
+      return {
+        startingTeam: this.startingTeam,
+        currentTeam: this.currentTeam,
+        redCardCounter: this.redCardCounter,
+        blueCardCounter: this.blueCardCounter,
+        guessCounter: this.guessCounter,
+        clue: this.clue,
+        winningTeam: this.winningTeam,
+        team: player.getTeam(),
+        board: this.getBoardByRole(player.getRole()),
+      };
+    }
   };
 
   /**
@@ -475,6 +477,7 @@ class Game {
     const player = this.getPlayerById(playerId);
 
     if (
+      player &&
       player.getTeam() === this.currentTeam &&
       player.getRole() === FIELD_OPERATIVE
     ) {
