@@ -101,14 +101,18 @@ io.on("connection", (socket) => {
 
   // To start the process for each player
   socket.on(INDIVIDUAL_START_GAME, () => {
-    player = game.getPlayerById(socket.id); // Get their latest Player object
-    joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
+    const player = game.getPlayerById(socket.id); // Get their latest Player object
+    if (player) {
+      joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
+    }
   });
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
     const player = game.getPlayerById(socket.id);
-    io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
+    if (player) {
+      io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
+    }
   });
 
   // Upon loading the GameScreen
