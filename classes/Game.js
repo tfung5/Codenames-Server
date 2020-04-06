@@ -296,8 +296,6 @@ class Game {
     board = this.assignWords(board);
 
     this.spymasterBoard = board;
-
-    console.log(board);
   };
 
   generateFieldOperativeBoard = () => {
