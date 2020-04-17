@@ -50,6 +50,7 @@ class Game {
     this.guessCounter = null;
     this.winningTeam = "";
     this.chatHistory = [];
+    this.timeOfLatestMessage = null;
 
     console.log("Board reset completed.");
   };
@@ -355,6 +356,7 @@ class Game {
       clue: this.clue,
       winningTeam: this.winningTeam,
       board: this.getBoardByRole(role),
+      timeOfLatestMessage: this.timeOfLatestMessage,
     };
   };
 
@@ -376,9 +378,18 @@ class Game {
         winningTeam: this.winningTeam,
         team: player.getTeam(),
         board: this.getBoardByRole(player.getRole()),
+        timeOfLatestMessage: this.timeOfLatestMessage,
       };
     }
   };
+
+  setTimeOfLatestMessage = (time) => {
+    this.timeOfLatestMessage = time;
+  }
+
+  getTimeOfLatestMessage = () => {
+    return this.timeOfLatestMessage;
+  }
 
   /**
    * Get red team
