@@ -47,6 +47,8 @@ const {
   CHOOSE_CARD,
   END_TURN,
   GET_MESSAGES,
+  SAVE_LATEST_TIME,
+  UPDATE_NOTIFICATION,
   GET_GAME,
   GET_PLAYER_INFO,
   FETCH_TEAMS,
@@ -120,6 +122,10 @@ io.on("connection", (socket) => {
     emitUpdateGame();
   });
 
+  socket.on(UPDATE_NOTIFICATION, () => {
+    emitUpdateGameAll();
+  });
+
   // Handle LOAD_PRESET_BOARD
   socket.on(LOAD_PRESET_BOARD, () => {
     game.loadPresetBoard();
@@ -150,7 +156,14 @@ io.on("connection", (socket) => {
     let chatHistory = [];
     game.saveChatMessages(payload);
     chatHistory = game.getChatMessages();
+    console.log(chatHistory);
     io.emit(CHAT_MESSAGE, payload);
+  });
+
+  socket.on(SAVE_LATEST_TIME, (payload) => {
+    game.setTimeOfLatestMessage(payload);
+    console.log(payload);
+    emitUpdateGameAll();
   });
 
   /**
