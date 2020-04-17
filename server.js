@@ -156,13 +156,11 @@ io.on("connection", (socket) => {
     let chatHistory = [];
     game.saveChatMessages(payload);
     chatHistory = game.getChatMessages();
-    console.log(chatHistory);
     io.emit(CHAT_MESSAGE, payload);
   });
 
   socket.on(SAVE_LATEST_TIME, (payload) => {
     game.setTimeOfLatestMessage(payload);
-    console.log(payload);
     emitUpdateGameAll();
   });
 
