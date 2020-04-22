@@ -208,6 +208,7 @@ io.on("connection", (socket) => {
     io.emit(UPDATE_TEAMS, {
       redTeam: game.getRedTeam(),
       blueTeam: game.getBlueTeam(),
+      isGameInProgress: game.getIsGameInProgress(),
     });
   };
 
@@ -227,7 +228,6 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  game.startGame();
 });
 server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));

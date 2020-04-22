@@ -21,6 +21,7 @@ class Game {
   constructor() {
     this.resetTeamInfo();
     this.resetGame();
+    this.isGameInProgress = false;
   }
 
   /**
@@ -51,6 +52,7 @@ class Game {
     this.winningTeam = "";
     this.chatHistory = [];
     this.timeOfLatestMessage = null;
+    this.isGameInProgress = true;
 
     console.log("Board reset completed.");
   };
@@ -385,11 +387,11 @@ class Game {
 
   setTimeOfLatestMessage = (time) => {
     this.timeOfLatestMessage = time;
-  }
+  };
 
   getTimeOfLatestMessage = () => {
     return this.timeOfLatestMessage;
-  }
+  };
 
   /**
    * Get red team
@@ -403,6 +405,10 @@ class Game {
    */
   getBlueTeam = () => {
     return this.blueTeam;
+  };
+
+  getIsGameInProgress = () => {
+    return this.isGameInProgress;
   };
 
   /**
