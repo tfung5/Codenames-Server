@@ -45,6 +45,7 @@ let game = new Game();
 const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
+  CHOOSE_CARD_RESPONSE,
   END_TURN,
   GET_MESSAGES,
   SAVE_LATEST_TIME,
@@ -133,10 +134,10 @@ io.on("connection", (socket) => {
   });
 
   // Upon pressing a card
-  socket.on(CHOOSE_CARD, (payload, callback) => {
+  socket.on(CHOOSE_CARD, (payload) => {
     let res = game.chooseCard(payload.row, payload.col);
     emitUpdateGameAll();
-    callback(res); // Sends the answer back to the client whether the guess was correct or not
+    io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
   });
 
   // Upon anyone pressing the 'End Turn' button
