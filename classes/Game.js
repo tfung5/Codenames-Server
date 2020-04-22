@@ -62,7 +62,7 @@ class Game {
    */
   insertPlayerIntoSlot = (player, team, index) => {
     // Prevent duplicate players
-    this.erasePlayerFromEitherTeam(player.getId());
+    this.removePlayer(player.getId());
 
     // Insert Player into appropriate team and position
     this.insertPlayerIntoTeam(player, team, index);
@@ -72,25 +72,57 @@ class Game {
    * Insert player into team
    */
   insertPlayerIntoTeam = (player, team, index) => {
+    this.setPlayerInfo(player, team, index);
+
     if (team === RED) {
       this.redTeam[index] = player;
     } else {
       this.blueTeam[index] = player;
     }
+
+    this.addPlayerToPlayersObject(player);
+
+    console.log(this.players);
+  };
+
+  setPlayerInfo = (player, team, index) => {
+    if (team === RED) {
+      player.setTeam(RED);
+    } else {
+      player.setTeam(BLUE);
+    }
+
+    if (index === 0) {
+      player.setRole(SPYMASTER);
+    } else {
+      player.setRole(FIELD_OPERATIVE);
+    }
+  };
+
+  addPlayerToPlayersObject = (player) => {
+    // If player exists and players object doesn't already have this player
+    if (player && !this.players[player.getId()]) {
+      this.players[player.getId()] = player;
+    }
+  };
+
+  removePlayerFromPlayersObject = (targetId) => {
+    delete this.players[targetId];
   };
 
   /**
-   * Erase player if on either team
+   * Remove player if on either team
    */
-  erasePlayerFromEitherTeam = (targetId) => {
-    this.erasePlayerFromTeam(targetId, this.redTeam);
-    this.erasePlayerFromTeam(targetId, this.blueTeam);
+  removePlayer = (targetId) => {
+    this.removePlayerFromTeam(targetId, this.redTeam);
+    this.removePlayerFromTeam(targetId, this.blueTeam);
+    this.removePlayerFromPlayersObject(targetId);
   };
 
   /**
-   * Erase player if on given team
+   * Remove player if on given team
    */
-  erasePlayerFromTeam = (targetId, team) => {
+  removePlayerFromTeam = (targetId, team) => {
     for (let i in team) {
       const player = team[i];
 
@@ -100,50 +132,12 @@ class Game {
     }
   };
 
-  setPlayerInfo = () => {
-    this.setPlayerInfoForTeam(this.redTeam);
-    this.setPlayerInfoForTeam(this.blueTeam);
-
-    this.createPlayersObject(); // Create player lookup object
-  };
-
-  setPlayerInfoForTeam = (team) => {
-    for (let i = 0; i < team.length; ++i) {
-      if (team[i]) {
-        // Set team
-        team[i].setTeam(team === this.redTeam ? RED : BLUE);
-
-        // Set role
-        if (i !== 0) {
-          team[i].setRole(FIELD_OPERATIVE);
-        } else {
-          team[i].setRole(SPYMASTER);
-        }
-      }
-    }
-  };
-
-  createPlayersObject = () => {
-    const players = {};
-
-    this.addPlayersFromTeamToPlayersObject(this.redTeam, players);
-    this.addPlayersFromTeamToPlayersObject(this.blueTeam, players);
-
-    this.players = players;
-  };
-
-  addPlayersFromTeamToPlayersObject = (team, players) => {
-    for (let i = 0; i < 4; ++i) {
-      const player = team[i];
-
-      if (player) {
-        players[player.getId()] = player;
-      }
-    }
-  };
-
   getPlayerById = (targetId) => {
     return this.players[targetId];
+  };
+
+  handleLeaveGame = (targetId) => {
+    this.removePlayer(targetId);
   };
 
   /**
