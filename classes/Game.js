@@ -81,8 +81,6 @@ class Game {
     }
 
     this.addPlayerToPlayersObject(player);
-
-    console.log(this.players);
   };
 
   setPlayerInfo = (player, team, index) => {
