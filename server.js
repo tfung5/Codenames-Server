@@ -157,6 +157,7 @@ io.on("connection", (socket) => {
   // Upon pressing the 'Leave Game' button
   socket.on(LEAVE_GAME, () => {
     game.handleLeaveGame(socket.id); // Handle this player leaving the game
+    leaveAllRooms();
     emitUpdateGameAll();
   });
 
@@ -226,6 +227,15 @@ io.on("connection", (socket) => {
       socket.join("lobby-fieldOperatives");
     } else if (role === SPYMASTER) {
       socket.join("lobby-spymasters");
+    }
+  };
+
+  const leaveAllRooms = () => {
+    for (let room in socket.rooms) {
+      // Except for its own room
+      if (room !== socket.id) {
+        socket.leave(room);
+      }
     }
   };
 });
