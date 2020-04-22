@@ -19,15 +19,15 @@ const {
 
 class Game {
   constructor() {
-    this.resetTeamInfo();
+    this.resetLobby();
     this.resetGame();
     this.isGameInProgress = false;
   }
 
   /**
-   * Resets team info
+   * Resets lobby
    */
-  resetTeamInfo = () => {
+  resetLobby = () => {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.players = {};

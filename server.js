@@ -59,6 +59,7 @@ const {
   LEAVE_GAME,
   LOAD_PRESET_BOARD,
   REQUEST_INDIVIDUAL_START_GAME,
+  RESET_LOBBY,
   RESTART_GAME,
   SET_CLUE,
   START_GAME,
@@ -159,6 +160,12 @@ io.on("connection", (socket) => {
     game.handleLeaveGame(socket.id); // Handle this player leaving the game
     leaveAllRooms();
     emitUpdateGameAll();
+  });
+
+  // Upon anyone pressing the 'Reset Lobby' button
+  socket.on(RESET_LOBBY, () => {
+    game.resetLobby();
+    emitUpdateTeams();
   });
 
   // Handle CHAT_MESSAGE
