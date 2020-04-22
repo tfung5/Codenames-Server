@@ -63,7 +63,7 @@ const {
   START_GAME,
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
-  UPDATE_TEAMS,
+  UPDATE_LOBBY,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
@@ -203,9 +203,9 @@ io.on("connection", (socket) => {
     );
   };
 
-  // Emit UPDATE_TEAMS
+  // Emit UPDATE_LOBBY
   const emitUpdateTeams = () => {
-    io.emit(UPDATE_TEAMS, {
+    io.emit(UPDATE_LOBBY, {
       redTeam: game.getRedTeam(),
       blueTeam: game.getBlueTeam(),
       isGameInProgress: game.getIsGameInProgress(),
