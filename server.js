@@ -53,17 +53,19 @@ const {
   GET_GAME,
   GET_PLAYER_INFO,
   FETCH_TEAMS,
-  INDIVIDUAL_START_GAME,
+  JOIN_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
+  LEAVE_GAME,
   LOAD_PRESET_BOARD,
   REQUEST_INDIVIDUAL_START_GAME,
+  RESET_LOBBY,
   RESTART_GAME,
   SET_CLUE,
   START_GAME,
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
-  UPDATE_TEAMS,
+  UPDATE_LOBBY,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
@@ -97,13 +99,12 @@ io.on("connection", (socket) => {
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
-    game.setPlayerInfo(); // Set team and roles for each player
     game.startGame(); // Generate the game info and board
     io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
   });
 
-  // To start the process for each player
-  socket.on(INDIVIDUAL_START_GAME, () => {
+  // To start the process for each player / Upon pressing the 'Join Game' button
+  socket.on(JOIN_GAME, () => {
     const player = game.getPlayerById(socket.id); // Get their latest Player object
     if (player) {
       joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
@@ -112,7 +113,9 @@ io.on("connection", (socket) => {
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
+    console.log("get player info req received");
     const player = game.getPlayerById(socket.id);
+    console.log("server send:", player);
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
     }
@@ -150,6 +153,19 @@ io.on("connection", (socket) => {
   socket.on(RESTART_GAME, () => {
     game.restartGame();
     emitUpdateGameAll();
+  });
+
+  // Upon pressing the 'Leave Game' button
+  socket.on(LEAVE_GAME, () => {
+    game.handleLeaveGame(socket.id); // Handle this player leaving the game
+    leaveAllRooms();
+    emitUpdateGameAll();
+  });
+
+  // Upon anyone pressing the 'Reset Lobby' button
+  socket.on(RESET_LOBBY, () => {
+    game.resetLobby();
+    emitUpdateTeams();
   });
 
   // Handle CHAT_MESSAGE
@@ -203,11 +219,12 @@ io.on("connection", (socket) => {
     );
   };
 
-  // Emit UPDATE_TEAMS
+  // Emit UPDATE_LOBBY
   const emitUpdateTeams = () => {
-    io.emit(UPDATE_TEAMS, {
+    io.emit(UPDATE_LOBBY, {
       redTeam: game.getRedTeam(),
       blueTeam: game.getBlueTeam(),
+      isGameInProgress: game.getIsGameInProgress(),
     });
   };
 
@@ -219,6 +236,15 @@ io.on("connection", (socket) => {
       socket.join("lobby-spymasters");
     }
   };
+
+  const leaveAllRooms = () => {
+    for (let room in socket.rooms) {
+      // Except for its own room
+      if (room !== socket.id) {
+        socket.leave(room);
+      }
+    }
+  };
 });
 
 /**
@@ -227,7 +253,6 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  game.startGame();
 });
 server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));
