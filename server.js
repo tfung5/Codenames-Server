@@ -138,21 +138,17 @@ io.on("connection", (socket) => {
   socket.on(JOIN_GAME, () => {
     game = gameList[lobby.getId()]; // Get the corresponding Game object for the Player's Lobby
     player = game.getPlayerById(socket.id); // Get their latest Player object
-    emitUpdatePlayerInfo(player); // Send latest Player object to client
     joinRoom(lobby, player); // Join room based on lobby id and player role
   });
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
-    if (player) {
-      io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
-    }
+    emitUpdatePlayerInfo(); // Send latest Player object to client
   });
 
   // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
-    console.log(socket.id, socket.rooms);
-    emitUpdateGame();
+    emitUpdateGame(); // Send latest Game object to client
   });
 
   socket.on(UPDATE_NOTIFICATION, () => {
@@ -262,16 +258,14 @@ io.on("connection", (socket) => {
     io.emit(UPDATE_LOBBIES, lobbyList);
   };
 
+  // Emit UPDATE_PLAYER_INFO
   const emitUpdatePlayerInfo = (player) => {
-    // Send latest Player object to client
-    // Emit UPDATE_PLAYER_INFO // Join room based on lobby id and player role
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
+    } else {
       console.log(
         "emitUpdatePlayerInfo: No player provided // Send latest Player object to client."
       );
-    } else {
-      // Join room based on lobby id and player role
     }
   };
 
