@@ -14,6 +14,7 @@ const onListening = require("./utils/onListening");
  * Classes
  */
 const Player = require("./classes/Player");
+const Lobby = require("./classes/Lobby");
 const Game = require("./classes/Game");
 
 /**
@@ -46,6 +47,7 @@ const {
   CHAT_MESSAGE,
   CHOOSE_CARD,
   CHOOSE_CARD_RESPONSE,
+  CREATE_LOBBY,
   END_TURN,
   GET_MESSAGES,
   SAVE_LATEST_TIME,
@@ -66,8 +68,12 @@ const {
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
   UPDATE_LOBBY,
+  UPDATE_LOBBIES,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
+
+let lobbyList = {};
+let nextLobbyNumber = 1;
 
 /**
  * Start socket server with `on` method.
@@ -79,6 +85,13 @@ io.on("connection", (socket) => {
 
   // Upon entering the HomeScreen
   let player = new Player(socket.id); // Create Player object
+
+  // Upon pressing the 'Create Lobby' button
+  socket.on(CREATE_LOBBY, () => {
+    const lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
+    lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
+    emitUpdateLobbies(); // Update all connected sockets that are subscribed to lobby updates
+  });
 
   // Upon pressing the 'Join Lobby' button
   socket.on(JOIN_LOBBY, (payload) => {
@@ -227,6 +240,11 @@ io.on("connection", (socket) => {
       blueTeam: game.getBlueTeam(),
       isGameInProgress: game.getIsGameInProgress(),
     });
+  };
+
+  // Emit UPDATE_LOBBIES
+  const emitUpdateLobbies = () => {
+    io.emit(UPDATE_LOBBIES, lobbyList);
   };
 
   // Join appropriate room depending on lobby number and role
