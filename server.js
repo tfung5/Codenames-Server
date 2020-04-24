@@ -74,16 +74,9 @@ let gameList = {}; // gameId : Game
 let nextLobbyNumber = 1;
 
 const seedLobbyList = (lobbyList) => {
-  for (let i = 1; i <= 5; ++i) {
+  for (let i = 1; i <= 10; ++i) {
     const lobby = new Lobby(i); // Create new lobby
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
-  }
-};
-
-const printLobbyList = (lobbyList) => {
-  console.log("lobbyList after seed:");
-  for (let i = 1; i <= 5; ++i) {
-    console.log(lobbyList[i].getLobby());
   }
 };
 
@@ -345,7 +338,6 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
   console.log("Server running on port:" + port);
   seedLobbyList(lobbyList);
-  printLobbyList(lobbyList);
 });
 server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));
