@@ -114,14 +114,14 @@ io.on("connection", (socket) => {
 
   // Upon loading the LobbyView
   socket.on(FETCH_TEAMS, () => {
-    emitUpdateTeams();
+    emitUpdateLobby();
   });
 
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
     lobby.insertPlayerIntoSlot(player, team, index);
-    emitUpdateTeams();
+    emitUpdateLobby();
   });
 
   // Upon *anyone* pressing the 'Start Game' button
@@ -180,7 +180,7 @@ io.on("connection", (socket) => {
   // Upon anyone pressing the 'Reset Lobby' button
   socket.on(RESET_LOBBY, () => {
     game.resetLobby();
-    emitUpdateTeams();
+    emitUpdateLobby();
   });
 
   // Handle CHAT_MESSAGE
@@ -235,7 +235,7 @@ io.on("connection", (socket) => {
   };
 
   // Emit UPDATE_LOBBY
-  const emitUpdateTeams = () => {
+  const emitUpdateLobby = () => {
     io.emit(UPDATE_LOBBY, {
       redTeam: lobby.getRedTeam(),
       blueTeam: lobby.getBlueTeam(),
