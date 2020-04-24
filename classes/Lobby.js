@@ -11,7 +11,7 @@ class Lobby {
   resetLobby = () => {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
-    this.players = {};
+    this.playerList = {};
   };
 
   getId = () => {
@@ -62,6 +62,10 @@ class Lobby {
     this.isGameInProgress = value;
   };
 
+  getIsGameInProgress = () => {
+    return this.isGameInProgress;
+  };
+
   getRedTeam = () => {
     return this.redTeam;
   };
@@ -70,8 +74,60 @@ class Lobby {
     return this.blueTeam;
   };
 
-  getIsGameInProgress = () => {
-    return this.isGameInProgress;
+  insertPlayerIntoSlot = (player, team, index) => {
+    this.removePlayer(player.getId()); // Prevent duplicate players
+    this.setPlayerInfo(player, team, index);
+    this.insertPlayerIntoTeam(player, team, index);
+    this.addPlayerToPlayerList(player);
+  };
+
+  insertPlayerIntoTeam = (player, team, index) => {
+    if (team === RED) {
+      this.redTeam[index] = player;
+    } else {
+      this.blueTeam[index] = player;
+    }
+  };
+
+  setPlayerInfo = (player, team, index) => {
+    if (team === RED) {
+      player.setTeam(RED);
+    } else {
+      player.setTeam(BLUE);
+    }
+
+    if (index === 0) {
+      player.setRole(SPYMASTER);
+    } else {
+      player.setRole(FIELD_OPERATIVE);
+    }
+  };
+
+  addPlayerToPlayerList = (player) => {
+    // If player exists and player list doesn't already have this player
+    if (player && !this.playerList[player.getId()]) {
+      this.playerList[player.getId()] = player;
+    }
+  };
+
+  removePlayerFromPlayerList = (targetId) => {
+    delete this.playerList[targetId];
+  };
+
+  removePlayerFromTeam = (targetId, team) => {
+    for (let i in team) {
+      const player = team[i];
+
+      if (player && player.getId() === targetId) {
+        delete team[i];
+      }
+    }
+  };
+
+  removePlayer = (targetId) => {
+    this.removePlayerFromTeam(targetId, this.redTeam);
+    this.removePlayerFromTeam(targetId, this.blueTeam);
+    this.removePlayerFromPlayerList(targetId);
   };
 
   getLobby = () => {
