@@ -113,9 +113,7 @@ io.on("connection", (socket) => {
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
-    console.log("get player info req received");
     const player = game.getPlayerById(socket.id);
-    console.log("server send:", player);
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
     }
@@ -123,6 +121,7 @@ io.on("connection", (socket) => {
 
   // Upon loading the GameScreen
   socket.on(GET_GAME, () => {
+    console.log(socket.id, socket.rooms);
     emitUpdateGame();
   });
 
