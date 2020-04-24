@@ -82,7 +82,9 @@ io.on("connection", (socket) => {
 
   // Upon pressing the 'Join Lobby' button
   socket.on(JOIN_LOBBY, (payload) => {
-    player.setName(payload); // Set Player name
+    const { name, lobby } = payload;
+    player.setName(name); // Set Player name
+    player.setLobby(lobby);
   });
 
   // Upon loading the LobbyView
