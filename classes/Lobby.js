@@ -38,6 +38,18 @@ class Lobby {
     this.currentPlayers = currentPlayers;
   };
 
+  incrementCurrentPlayers = () => {
+    if (this.currentPlayers < this.maxPlayers()) {
+      this.currentPlayers += 1;
+    }
+  };
+
+  decrementCurrentPlayers = () => {
+    if (this.currentPlayers > 0) {
+      this.currentPlayers -= 1;
+    }
+  };
+
   getCurrentPlayers = () => {
     try {
       return this.currentPlayers;
@@ -77,11 +89,12 @@ class Lobby {
   insertPlayerIntoSlot = (player, team, index) => {
     this.removePlayer(player.getId()); // Prevent duplicate players
     this.setPlayerInfo(player, team, index);
-    this.insertPlayerIntoTeam(player, team, index);
+    this.addPlayerToTeam(player, team, index);
     this.addPlayerToPlayerList(player);
+    this.incrementCurrentPlayers();
   };
 
-  insertPlayerIntoTeam = (player, team, index) => {
+  addPlayerToTeam = (player, team, index) => {
     if (team === RED) {
       this.redTeam[index] = player;
     } else {
@@ -125,9 +138,14 @@ class Lobby {
   };
 
   removePlayer = (targetId) => {
-    this.removePlayerFromTeam(targetId, this.redTeam);
-    this.removePlayerFromTeam(targetId, this.blueTeam);
-    this.removePlayerFromPlayerList(targetId);
+    // If remove was successful, from both team and playerList
+    if (
+      (this.removePlayerFromTeam(targetId, this.redTeam) ||
+        this.removePlayerFromTeam(targetId, this.blueTeam)) &&
+      this.removePlayerFromPlayerList(targetId)
+    ) {
+      this.decrementCurrentPlayers();
+    }
   };
 
   getLobby = () => {
