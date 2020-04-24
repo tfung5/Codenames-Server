@@ -107,7 +107,7 @@ io.on("connection", (socket) => {
   socket.on(JOIN_GAME, () => {
     const player = game.getPlayerById(socket.id); // Get their latest Player object
     if (player) {
-      joinRoomByRole(player.getRole()); // Join the appropriate room, depending on their role
+      joinRoomByLobbyAndRole(player.getLobby(), player.getRole()); // Join the appropriate room, depending on their role
     }
   });
 
@@ -228,13 +228,27 @@ io.on("connection", (socket) => {
     });
   };
 
-  // Join appropriate room depending on role
-  const joinRoomByRole = (role) => {
-    if (role === FIELD_OPERATIVE) {
-      socket.join("lobby-fieldOperatives");
-    } else if (role === SPYMASTER) {
-      socket.join("lobby-spymasters");
+  // Join appropriate room depending on lobby number and role
+  const joinRoomByLobbyAndRole = (lobby, role) => {
+    let room = "lobby-";
+
+    if (lobby) {
+      room += lobby + "-";
+    } else {
+      console.log("No lobby number provided:", lobby);
+      return;
     }
+
+    if (role === FIELD_OPERATIVE) {
+      room += "fieldOperatives";
+    } else if (role === SPYMASTER) {
+      room += "spymasters";
+    } else {
+      console.log("No role provided:", role);
+      return;
+    }
+
+    socket.join(room);
   };
 
   const leaveAllRooms = () => {
