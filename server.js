@@ -47,8 +47,6 @@ const {
   GET_MESSAGES,
   SAVE_LATEST_TIME,
   UPDATE_NOTIFICATION,
-  GET_GAME,
-  GET_PLAYER_INFO,
   FETCH_TEAMS,
   JOIN_GAME,
   JOIN_LOBBY,
@@ -123,22 +121,10 @@ io.on("connection", (socket) => {
   // To start the process for each player / Upon pressing the 'Join Game' button
   socket.on(JOIN_GAME, () => {
     game = gameList[lobby.getId()]; // Get the corresponding Game object for the Player's Lobby
+    emitUpdateGame(); // Send latest Game object to client
     player = game.getPlayerById(socket.id); // Get their latest Player object
     emitUpdatePlayerInfo(player); // Send latest Player object to client
     joinRoom(lobby, player); // Join room based on lobby id and player role
-  });
-
-  // Upon loading the GameScreen
-  socket.on(GET_PLAYER_INFO, () => {
-    if (player) {
-      io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
-    }
-  });
-
-  // Upon loading the GameScreen
-  socket.on(GET_GAME, () => {
-    console.log(socket.id, socket.rooms);
-    emitUpdateGame();
   });
 
   socket.on(UPDATE_NOTIFICATION, () => {
