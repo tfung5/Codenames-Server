@@ -4,6 +4,7 @@ class Player {
   constructor(id, name = "Player") {
     this.id = id;
     this.name = name;
+    this.lobby = 5;
   }
 
   getId = () => {
