@@ -49,6 +49,7 @@ const {
   UPDATE_NOTIFICATION,
   FETCH_GAME,
   FETCH_LOBBY,
+  FETCH_LOBBY_LIST,
   FETCH_PLAYER_INFO,
   JOIN_GAME,
   JOIN_LOBBY,
@@ -63,7 +64,7 @@ const {
   UPDATE_GAME,
   UPDATE_PLAYER_INFO,
   UPDATE_LOBBY,
-  UPDATE_LOBBIES,
+  UPDATE_LOBBY_LIST,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
@@ -99,11 +100,16 @@ io.on("connection", (socket) => {
   let lobby = null; // Placeholder for Player's current Lobby object
   let game = null; // Placeholder for Player's current Game object
 
+  // Upon loading the HomeScreen
+  socket.on(FETCH_LOBBY_LIST, () => {
+    emitUpdateLobbyList();
+  });
+
   // Upon pressing the 'Create Lobby' button
   socket.on(CREATE_LOBBY, () => {
     lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
-    emitUpdateLobbies(); // Update all connected sockets that are subscribed to lobby updates
+    emitUpdateLobbyListAll(); // Update all connected sockets that are subscribed to lobby list updates
   });
 
   // Upon pressing the 'Join Lobby' button
@@ -114,7 +120,7 @@ io.on("connection", (socket) => {
     lobby = lobbyList[lobbyId]; // Set Lobby
   });
 
-  // Upon loading the LobbyView
+  // Upon loading the LobbyScreen
   socket.on(FETCH_LOBBY, () => {
     emitUpdateLobby();
   });
@@ -123,7 +129,7 @@ io.on("connection", (socket) => {
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
     lobby.insertPlayerIntoSlot(player, team, index);
-    emitUpdateLobby();
+    emitUpdateLobbyAll();
   });
 
   // Upon *anyone* pressing the 'Start Game' button
@@ -190,7 +196,7 @@ io.on("connection", (socket) => {
   // Upon anyone pressing the 'Reset Lobby' button
   socket.on(RESET_LOBBY, () => {
     game.resetLobby();
-    emitUpdateLobby();
+    emitUpdateLobbyAll();
   });
 
   // Handle CHAT_MESSAGE
@@ -246,16 +252,34 @@ io.on("connection", (socket) => {
 
   // Emit UPDATE_LOBBY
   const emitUpdateLobby = () => {
-    io.emit(UPDATE_LOBBY, {
+    let res = {
       redTeam: lobby.getRedTeam(),
       blueTeam: lobby.getBlueTeam(),
       isGameInProgress: lobby.getIsGameInProgress(),
-    });
+    };
+
+    io.to(socket.id).emit(UPDATE_LOBBY, res);
   };
 
-  // Emit UPDATE_LOBBIES
-  const emitUpdateLobbies = () => {
-    io.emit(UPDATE_LOBBIES, lobbyList);
+  // Emit UPDATE_LOBBY to all
+  const emitUpdateLobbyAll = () => {
+    let res = {
+      redTeam: lobby.getRedTeam(),
+      blueTeam: lobby.getBlueTeam(),
+      isGameInProgress: lobby.getIsGameInProgress(),
+    };
+
+    io.emit(UPDATE_LOBBY, res);
+  };
+
+  // Emit UPDATE_LOBBY_LIST
+  const emitUpdateLobbyList = () => {
+    io.to(socket.id).emit(UPDATE_LOBBY_LIST, lobbyList);
+  };
+
+  // Emit UPDATE_LOBBY_LIST to all
+  const emitUpdateLobbyListAll = () => {
+    io.emit(UPDATE_LOBBY_LIST, lobbyList);
   };
 
   // Emit UPDATE_PLAYER_INFO
