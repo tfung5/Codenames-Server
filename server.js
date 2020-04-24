@@ -47,9 +47,9 @@ const {
   GET_MESSAGES,
   SAVE_LATEST_TIME,
   UPDATE_NOTIFICATION,
-  GET_GAME,
-  GET_PLAYER_INFO,
-  FETCH_TEAMS,
+  FETCH_GAME,
+  FETCH_LOBBY,
+  FETCH_PLAYER_INFO,
   JOIN_GAME,
   JOIN_LOBBY,
   JOIN_SLOT,
@@ -115,7 +115,7 @@ io.on("connection", (socket) => {
   });
 
   // Upon loading the LobbyView
-  socket.on(FETCH_TEAMS, () => {
+  socket.on(FETCH_LOBBY, () => {
     emitUpdateLobby();
   });
 
@@ -142,12 +142,12 @@ io.on("connection", (socket) => {
   });
 
   // Upon loading the GameScreen
-  socket.on(GET_PLAYER_INFO, () => {
+  socket.on(FETCH_PLAYER_INFO, () => {
     emitUpdatePlayerInfo(); // Send latest Player object to client
   });
 
   // Upon loading the GameScreen
-  socket.on(GET_GAME, () => {
+  socket.on(FETCH_GAME, () => {
     emitUpdateGame(); // Send latest Game object to client
   });
 
