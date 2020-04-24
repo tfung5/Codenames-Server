@@ -2,16 +2,16 @@ class Lobby {
   constructor(id, name = "Lobby #" + id) {
     this.id = id;
     this.name = name;
-    this.currentPlayers = 0;
     this.maxPlayers = 8;
-    this.resetLobby();
     this.isGameInProgress = false;
+    this.resetLobby();
   }
 
   resetLobby = () => {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
+    this.currentPlayers = 0;
   };
 
   getId = () => {
