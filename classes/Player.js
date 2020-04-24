@@ -50,6 +50,18 @@ class Player {
     }
   };
 
+  setLobby = (lobby) => {
+    this.lobby = lobby;
+  };
+
+  getLobby = () => {
+    try {
+      return this.lobby;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   getPlayer = () => {
     try {
       return {
