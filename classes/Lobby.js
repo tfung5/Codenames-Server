@@ -94,14 +94,6 @@ class Lobby {
     this.incrementCurrentPlayers();
   };
 
-  addPlayerToTeam = (player, team, index) => {
-    if (team === RED) {
-      this.redTeam[index] = player;
-    } else {
-      this.blueTeam[index] = player;
-    }
-  };
-
   setPlayerInfo = (player, team, index) => {
     if (team === RED) {
       player.setTeam(RED);
@@ -116,6 +108,24 @@ class Lobby {
     }
   };
 
+  addPlayerToTeam = (player, team, index) => {
+    if (team === RED) {
+      this.redTeam[index] = player;
+    } else {
+      this.blueTeam[index] = player;
+    }
+  };
+
+  removePlayerFromTeam = (targetId, team) => {
+    for (let i in team) {
+      const player = team[i];
+
+      if (player && player.getId() === targetId) {
+        delete team[i];
+      }
+    }
+  };
+
   addPlayerToPlayerList = (player) => {
     // If player exists and player list doesn't already have this player
     if (player && !this.playerList[player.getId()]) {
@@ -127,14 +137,8 @@ class Lobby {
     delete this.playerList[targetId];
   };
 
-  removePlayerFromTeam = (targetId, team) => {
-    for (let i in team) {
-      const player = team[i];
-
-      if (player && player.getId() === targetId) {
-        delete team[i];
-      }
-    }
+  getPlayerList = () => {
+    return this.playerList;
   };
 
   removePlayer = (targetId) => {

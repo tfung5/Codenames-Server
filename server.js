@@ -36,11 +36,6 @@ const server = http.createServer(app);
 const io = require("socket.io").listen(server);
 
 /**
- * Game data
- */
-let game = new Game();
-
-/**
  * Require constants
  */
 const {
@@ -72,7 +67,9 @@ const {
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
-let lobbyList = {};
+// For now, lobbyId sbould be equal to gameId
+let lobbyList = {}; // lobbyId : Lobby
+let gameList = {}; // gameId : Game
 let nextLobbyNumber = 1;
 
 /**
@@ -85,19 +82,22 @@ io.on("connection", (socket) => {
 
   // Upon entering the HomeScreen
   let player = new Player(socket.id); // Create Player object
+  let lobby = null; // Placeholder for Player's current Lobby object
+  let game = null; // Placeholder for Player's current Game object
 
   // Upon pressing the 'Create Lobby' button
   socket.on(CREATE_LOBBY, () => {
-    const lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
+    lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
     emitUpdateLobbies(); // Update all connected sockets that are subscribed to lobby updates
   });
 
   // Upon pressing the 'Join Lobby' button
   socket.on(JOIN_LOBBY, (payload) => {
-    const { name, lobby } = payload;
+    const { name, lobbyId } = payload;
+
     player.setName(name); // Set Player name
-    player.setLobby(lobby);
+    lobby = lobbyList[lobbyId]; // Set Lobby
   });
 
   // Upon loading the LobbyView
@@ -108,27 +108,28 @@ io.on("connection", (socket) => {
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
-    game.insertPlayerIntoSlot(player, team, index);
+    lobby.insertPlayerIntoSlot(player, team, index);
     emitUpdateTeams();
   });
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
-    game.startGame(); // Generate the game info and board
+    let newGame = new Game(lobby.getId(), lobby.getPlayerList()); // Create new Game
+    newGame.startGame(); // Generate the game info and board
+    gameList[lobby.getId()] = newGame; // Add game by id to list of games
     io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
   });
 
   // To start the process for each player / Upon pressing the 'Join Game' button
   socket.on(JOIN_GAME, () => {
-    const player = game.getPlayerById(socket.id); // Get their latest Player object
-    if (player) {
-      joinRoomByLobbyAndRole(player.getLobby(), player.getRole()); // Join the appropriate room, depending on their role
-    }
+    game = gameList[lobby.getId()]; // Get the corresponding Game object for the Player's Lobby
+    player = game.getPlayerById(socket.id); // Get their latest Player object
+    emitUpdatePlayerInfo(player); // Send latest Player object to client
+    joinRoom(lobby, player); // Join room based on lobby id and player role
   });
 
   // Upon loading the GameScreen
   socket.on(GET_PLAYER_INFO, () => {
-    const player = game.getPlayerById(socket.id);
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
     }
@@ -236,9 +237,9 @@ io.on("connection", (socket) => {
   // Emit UPDATE_LOBBY
   const emitUpdateTeams = () => {
     io.emit(UPDATE_LOBBY, {
-      redTeam: game.getRedTeam(),
-      blueTeam: game.getBlueTeam(),
-      isGameInProgress: game.getIsGameInProgress(),
+      redTeam: lobby.getRedTeam(),
+      blueTeam: lobby.getBlueTeam(),
+      isGameInProgress: lobby.getIsGameInProgress(),
     });
   };
 
@@ -247,23 +248,48 @@ io.on("connection", (socket) => {
     io.emit(UPDATE_LOBBIES, lobbyList);
   };
 
-  // Join appropriate room depending on lobby number and role
-  const joinRoomByLobbyAndRole = (lobby, role) => {
+  const emitUpdatePlayerInfo = (player) => {
+    // Send latest Player object to client
+    // Emit UPDATE_PLAYER_INFO // Join room based on lobby id and player role
+    if (player) {
+      io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
+      console.log(
+        "emitUpdatePlayerInfo: No player provided // Send latest Player object to client."
+      );
+    } else {
+      // Join room based on lobby id and player role
+    }
+  };
+
+  /**
+   * Join appropriate room depending on lobby number and player role
+   * @param {Lobby} lobby
+   * @param {Player} player
+   */
+  const joinRoom = (lobby, player) => {
     let room = "lobby-";
 
     if (lobby) {
-      room += lobby + "-";
+      const lobbyId = lobby.getId();
+      room += lobbyId + "-";
     } else {
-      console.log("No lobby number provided:", lobby);
+      console.log("joinRoom: No lobby provided.");
       return;
     }
 
-    if (role === FIELD_OPERATIVE) {
-      room += "fieldOperatives";
-    } else if (role === SPYMASTER) {
-      room += "spymasters";
+    if (player) {
+      const { role } = player;
+
+      if (role === FIELD_OPERATIVE) {
+        room += "fieldOperatives";
+      } else if (role === SPYMASTER) {
+        room += "spymasters";
+      } else {
+        console.log("joinRoom: No role provided.");
+        return;
+      }
     } else {
-      console.log("No role provided:", role);
+      console.log("joinRoom: No player provided.");
       return;
     }
 
