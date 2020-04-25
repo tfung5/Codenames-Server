@@ -176,8 +176,8 @@ io.on("connection", (socket) => {
   socket.on(CHOOSE_CARD, (payload) => {
     if (game) {
       let res = game.chooseCard(payload.row, payload.col);
-      io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
       emitUpdateGameAll();
+      io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
     }
   });
 
