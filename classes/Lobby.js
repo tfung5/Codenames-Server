@@ -14,7 +14,6 @@ class Lobby {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
-    this.currentPlayers = 0;
   };
 
   getId = () => {
@@ -37,25 +36,9 @@ class Lobby {
     }
   };
 
-  setCurrentPlayers = (currentPlayers) => {
-    this.currentPlayers = currentPlayers;
-  };
-
-  incrementCurrentPlayers = () => {
-    if (this.currentPlayers < this.maxPlayers()) {
-      this.currentPlayers += 1;
-    }
-  };
-
-  decrementCurrentPlayers = () => {
-    if (this.currentPlayers > 0) {
-      this.currentPlayers -= 1;
-    }
-  };
-
   getCurrentPlayers = () => {
     try {
-      return this.currentPlayers;
+      return Object.keys(this.playerList).length;
     } catch (err) {
       console.log(err);
     }
@@ -94,7 +77,6 @@ class Lobby {
     this.setPlayerInfo(player, team, index);
     this.addPlayerToTeam(player, team, index);
     this.addPlayerToPlayerList(player);
-    this.incrementCurrentPlayers();
   };
 
   setPlayerInfo = (player, team, index) => {
@@ -145,14 +127,9 @@ class Lobby {
   };
 
   removePlayer = (targetId) => {
-    // If remove was successful, from both team and playerList
-    if (
-      (this.removePlayerFromTeam(targetId, this.redTeam) ||
-        this.removePlayerFromTeam(targetId, this.blueTeam)) &&
-      this.removePlayerFromPlayerList(targetId)
-    ) {
-      this.decrementCurrentPlayers();
-    }
+    this.removePlayerFromTeam(targetId, this.redTeam);
+    this.removePlayerFromTeam(targetId, this.blueTeam);
+    this.removePlayerFromPlayerList(targetId);
   };
 
   getLobby = () => {
