@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
-    if (lobby && team && index) {
+    if (lobby && team && index >= 0) {
       lobby.insertPlayerIntoSlot(player, team, index);
       emitUpdateLobbyAll();
     }
