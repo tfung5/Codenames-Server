@@ -321,9 +321,7 @@ io.on("connection", (socket) => {
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
     } else {
-      console.log(
-        "emitUpdatePlayerInfo: No player provided // Send latest Player object to client."
-      );
+      console.log("emitUpdatePlayerInfo: No player provided");
     }
   };
 
