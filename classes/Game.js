@@ -63,8 +63,12 @@ class Game {
     return this.playerList[targetId];
   };
 
-  handleLeaveGame = (targetId) => {
-    this.removePlayer(targetId);
+  removePlayer = (targetId) => {
+    this.removePlayerFromPlayerList(targetId);
+  };
+
+  removePlayerFromPlayerList = (targetId) => {
+    delete this.playerList[targetId];
   };
 
   /**

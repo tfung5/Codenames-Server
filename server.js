@@ -197,15 +197,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Upon pressing the 'Leave Game' button
-  socket.on(LEAVE_GAME, () => {
-    if (game) {
-      game.handleLeaveGame(socket.id); // Handle this player leaving the game
-      leaveAllRooms();
-      emitUpdateGameAll();
-    }
-  });
-
   // Upon anyone pressing the 'Reset Lobby' button
   socket.on(RESET_LOBBY, () => {
     if (game) {
@@ -247,6 +238,26 @@ io.on("connection", (socket) => {
   socket.on(GET_MESSAGES, () => {
     emitChatMessages();
   });
+
+  // Upon pressing the 'Leave Game' button
+  socket.on(LEAVE_GAME, () => {
+    handleLeaveGame();
+  });
+
+  // Upon disconnecting
+  socket.on("disconnect", () => {
+    handleLeaveGame();
+  });
+
+  // Handle this player leaving the game
+  const handleLeaveGame = () => {
+    if (lobby && game) {
+      lobby.removePlayer(socket.id);
+      game.removePlayer(socket.id);
+      leaveAllRooms();
+      emitUpdateGameAll();
+    }
+  };
 
   //Emit CHAT_MESSAGE -> send current messages
   const emitChatMessages = () => {
