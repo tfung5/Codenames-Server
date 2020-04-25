@@ -114,6 +114,8 @@ io.on("connection", (socket) => {
 
     player.setName(name); // Set Player name
     lobby = lobbyList[lobbyId]; // Set Lobby
+
+    joinRoomForLobby(lobby);
   });
 
   // Upon loading the LobbyScreen
@@ -150,7 +152,7 @@ io.on("connection", (socket) => {
       player = game.getPlayerById(socket.id); // Get their latest Player object
     }
     if (lobby && player) {
-      joinRoom(lobby, player); // Join room based on lobby id and player role
+      joinRoomForGame(lobby, player); // Join room based on lobby id and player role
     }
   });
 
@@ -314,7 +316,7 @@ io.on("connection", (socket) => {
     if (lobby) {
       let res = lobby.getLobby();
 
-      io.emit(UPDATE_LOBBY, res);
+      io.to("lobby-" + lobby.getId()).emit(UPDATE_LOBBY, res);
     }
   };
 
@@ -338,18 +340,28 @@ io.on("connection", (socket) => {
   };
 
   /**
+   * Join appropriate room depending on lobby number
+   * @param {Lobby} lobby
+   */
+  const joinRoomForLobby = (lobby) => {
+    if (lobby) {
+      socket.join("lobby-" + lobby.getId());
+    }
+  };
+
+  /**
    * Join appropriate room depending on lobby number and player role
    * @param {Lobby} lobby
    * @param {Player} player
    */
-  const joinRoom = (lobby, player) => {
+  const joinRoomForGame = (lobby, player) => {
     let room = "lobby-";
 
     if (lobby) {
       const lobbyId = lobby.getId();
       room += lobbyId + "-";
     } else {
-      console.log("joinRoom: No lobby provided.");
+      console.log("joinRoomForGame: No lobby provided.");
       return;
     }
 
@@ -361,11 +373,11 @@ io.on("connection", (socket) => {
       } else if (role === SPYMASTER) {
         room += "spymasters";
       } else {
-        console.log("joinRoom: No role provided.");
+        console.log("joinRoomForGame: No role provided.");
         return;
       }
     } else {
-      console.log("joinRoom: No player provided.");
+      console.log("joinRoomForGame: No player provided.");
       return;
     }
 
