@@ -51,6 +51,7 @@ class Game {
     this.winningTeam = "";
     this.chatHistory = [];
     this.timeOfLatestMessage = null;
+    this.hasClueBeenSet = false;
 
     console.log("Board reset completed.");
   };
@@ -284,6 +285,7 @@ class Game {
       winningTeam: this.winningTeam,
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
+      hasClueBeenSet: this.hasClueBeenSet,
     };
   };
 
@@ -306,6 +308,7 @@ class Game {
         team: player.getTeam(),
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
+        hasClueBeenSet: this.hasClueBeenSet,
       };
     }
   };
@@ -439,6 +442,7 @@ class Game {
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
 
     this.clue = {}; // Clear the current clue
+    this.hasClueBeenSet = false; // Resets hasClueBeenSet
   };
 
   /**
@@ -448,6 +452,7 @@ class Game {
   setClue = (clue) => {
     this.clue = clue;
     this.guessCounter = clue.number + 1;
+    this.hasClueBeenSet = true;
   };
 }
 
