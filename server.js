@@ -203,8 +203,8 @@ io.on("connection", (socket) => {
 
   // Upon anyone pressing the 'Reset Lobby' button
   socket.on(RESET_LOBBY, () => {
-    if (game) {
-      game.resetLobby();
+    if (lobby) {
+      lobby.resetLobby();
       emitUpdateLobbyAll();
     }
   });
