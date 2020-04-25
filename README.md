@@ -1,3 +1,8 @@
 # Codenames Server
 
-## Members
+## Installation & Running
+
+```
+npm i
+npm run dev
+```
