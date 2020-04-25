@@ -1,10 +1,11 @@
 const { RED, BLUE } = require("../constants/Cards");
 const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
+const { v4: uuidv4 } = require("uuid");
 
 class Lobby {
-  constructor(id, name = "Lobby #" + id) {
-    this.id = id;
-    this.name = name;
+  constructor(creatorName) {
+    this.id = uuidv4();
+    this.name = creatorName + "'s Game";
     this.maxPlayers = 8;
     this.isGameInProgress = false;
     this.resetLobby();

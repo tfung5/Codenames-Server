@@ -71,14 +71,6 @@ const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 // For now, lobbyId sbould be equal to gameId
 let lobbyList = {}; // lobbyId : Lobby
 let gameList = {}; // gameId : Game
-let nextLobbyNumber = 1;
-
-const seedLobbyList = (lobbyList) => {
-  for (let i = nextLobbyNumber; i <= 10; i++, nextLobbyNumber++) {
-    const lobby = new Lobby(i); // Create new lobby
-    lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
-  }
-};
 
 /**
  * Start socket server with `on` method.
@@ -102,7 +94,7 @@ io.on("connection", (socket) => {
   socket.on(CREATE_LOBBY, (payload) => {
     const { name } = payload;
     player.setName(name); // Set Player name
-    lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
+    lobby = new Lobby(name); // Create new lobby
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
     joinRoomForLobby(lobby); // Join appropriate room for lobby
     emitUpdateLobbyListAll(); // Update all subscribed sockets that a new Lobby has been added to the list
@@ -398,7 +390,6 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  // seedLobbyList(lobbyList);
 });
 server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));
