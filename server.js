@@ -269,11 +269,11 @@ io.on("connection", (socket) => {
   // Emit UPDATE_GAME to all
   const emitUpdateGameAll = () => {
     if (game) {
-      io.to("lobby-spymasters").emit(
+      io.to("lobby-" + lobby.getId() + "-spymasters").emit(
         UPDATE_GAME,
         game.getGameByRole(SPYMASTER)
       );
-      io.to("lobby-fieldOperatives").emit(
+      io.to("lobby-" + lobby.getId() + "-fieldOperatives").emit(
         UPDATE_GAME,
         game.getGameByRole(FIELD_OPERATIVE)
       );
