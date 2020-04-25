@@ -74,7 +74,7 @@ let gameList = {}; // gameId : Game
 let nextLobbyNumber = 1;
 
 const seedLobbyList = (lobbyList) => {
-  for (let i = 1; i <= 10; ++i) {
+  for (let i = nextLobbyNumber; i <= 10; i++, nextLobbyNumber++) {
     const lobby = new Lobby(i); // Create new lobby
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
   }
@@ -99,10 +99,13 @@ io.on("connection", (socket) => {
   });
 
   // Upon pressing the 'Create Lobby' button
-  socket.on(CREATE_LOBBY, () => {
+  socket.on(CREATE_LOBBY, (payload) => {
+    const { name } = payload;
+    player.setName(name); // Set Player name
+
     lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
-    emitUpdateLobbyListAll(); // Update all connected sockets that are subscribed to lobby list updates
+    emitUpdateLobbyListAll(); // Update all subscribed sockets that a new Lobby has been added to the list
   });
 
   // Upon pressing the 'Join Lobby' button
