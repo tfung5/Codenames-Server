@@ -36,14 +36,6 @@ class Lobby {
     }
   };
 
-  getCurrentPlayers = () => {
-    try {
-      return Object.keys(this.playerList).length;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   setMaxPlayers = (maxPlayers) => {
     this.maxPlayers = maxPlayers;
   };
@@ -137,7 +129,6 @@ class Lobby {
       return {
         id: this.getId(),
         name: this.getName(),
-        currentPlayers: this.getCurrentPlayers(),
         maxPlayers: this.getMaxPlayers(),
         redTeam: this.getRedTeam(),
         blueTeam: this.getBlueTeam(),
