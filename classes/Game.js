@@ -18,19 +18,18 @@ const {
 } = require("../utils/presetBoard");
 
 class Game {
-  constructor() {
-    this.resetLobby();
+  constructor(id, playerList) {
+    this.id = id;
+    this.playerList = playerList;
     this.resetGame();
-    this.isGameInProgress = false;
   }
 
-  /**
-   * Resets lobby
-   */
-  resetLobby = () => {
-    this.redTeam = new Array(4).fill(null);
-    this.blueTeam = new Array(4).fill(null);
-    this.players = {};
+  getId = () => {
+    try {
+      return this.id;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   /**
@@ -52,90 +51,25 @@ class Game {
     this.winningTeam = "";
     this.chatHistory = [];
     this.timeOfLatestMessage = null;
-    this.isGameInProgress = true;
+    this.hasClueBeenSet = false;
 
     console.log("Board reset completed.");
   };
 
-  /**
-   * Insert player into slot
-   */
-  insertPlayerIntoSlot = (player, team, index) => {
-    // Prevent duplicate players
-    this.removePlayer(player.getId());
-
-    // Insert Player into appropriate team and position
-    this.insertPlayerIntoTeam(player, team, index);
-  };
-
-  /**
-   * Insert player into team
-   */
-  insertPlayerIntoTeam = (player, team, index) => {
-    this.setPlayerInfo(player, team, index);
-
-    if (team === RED) {
-      this.redTeam[index] = player;
-    } else {
-      this.blueTeam[index] = player;
-    }
-
-    this.addPlayerToPlayersObject(player);
-  };
-
-  setPlayerInfo = (player, team, index) => {
-    if (team === RED) {
-      player.setTeam(RED);
-    } else {
-      player.setTeam(BLUE);
-    }
-
-    if (index === 0) {
-      player.setRole(SPYMASTER);
-    } else {
-      player.setRole(FIELD_OPERATIVE);
-    }
-  };
-
-  addPlayerToPlayersObject = (player) => {
-    // If player exists and players object doesn't already have this player
-    if (player && !this.players[player.getId()]) {
-      this.players[player.getId()] = player;
-    }
-  };
-
-  removePlayerFromPlayersObject = (targetId) => {
-    delete this.players[targetId];
-  };
-
-  /**
-   * Remove player if on either team
-   */
-  removePlayer = (targetId) => {
-    this.removePlayerFromTeam(targetId, this.redTeam);
-    this.removePlayerFromTeam(targetId, this.blueTeam);
-    this.removePlayerFromPlayersObject(targetId);
-  };
-
-  /**
-   * Remove player if on given team
-   */
-  removePlayerFromTeam = (targetId, team) => {
-    for (let i in team) {
-      const player = team[i];
-
-      if (player && player.getId() === targetId) {
-        delete team[i];
-      }
-    }
+  setPlayerList = (playerList) => {
+    this.playerList = playerList;
   };
 
   getPlayerById = (targetId) => {
-    return this.players[targetId];
+    return this.playerList[targetId];
   };
 
-  handleLeaveGame = (targetId) => {
-    this.removePlayer(targetId);
+  removePlayer = (targetId) => {
+    this.removePlayerFromPlayerList(targetId);
+  };
+
+  removePlayerFromPlayerList = (targetId) => {
+    delete this.playerList[targetId];
   };
 
   /**
@@ -351,6 +285,7 @@ class Game {
       winningTeam: this.winningTeam,
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
+      hasClueBeenSet: this.hasClueBeenSet,
     };
   };
 
@@ -373,6 +308,7 @@ class Game {
         team: player.getTeam(),
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
+        hasClueBeenSet: this.hasClueBeenSet,
       };
     }
   };
@@ -397,10 +333,6 @@ class Game {
    */
   getBlueTeam = () => {
     return this.blueTeam;
-  };
-
-  getIsGameInProgress = () => {
-    return this.isGameInProgress;
   };
 
   /**
@@ -510,6 +442,7 @@ class Game {
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
 
     this.clue = {}; // Clear the current clue
+    this.hasClueBeenSet = false; // Resets hasClueBeenSet
   };
 
   /**
@@ -519,6 +452,7 @@ class Game {
   setClue = (clue) => {
     this.clue = clue;
     this.guessCounter = clue.number + 1;
+    this.hasClueBeenSet = true;
   };
 }
 
