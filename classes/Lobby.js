@@ -1,3 +1,6 @@
+const { RED, BLUE } = require("../constants/Cards");
+const { SPYMASTER, FIELD_OPERATIVE } = require("../constants/Roles");
+
 class Lobby {
   constructor(id, name = "Lobby #" + id) {
     this.id = id;
