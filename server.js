@@ -283,11 +283,7 @@ io.on("connection", (socket) => {
   // Emit UPDATE_LOBBY
   const emitUpdateLobby = () => {
     if (lobby) {
-      let res = {
-        redTeam: lobby.getRedTeam(),
-        blueTeam: lobby.getBlueTeam(),
-        isGameInProgress: lobby.getIsGameInProgress(),
-      };
+      let res = lobby.getLobby();
 
       io.to(socket.id).emit(UPDATE_LOBBY, res);
     }
@@ -296,11 +292,7 @@ io.on("connection", (socket) => {
   // Emit UPDATE_LOBBY to all
   const emitUpdateLobbyAll = () => {
     if (lobby) {
-      let res = {
-        redTeam: lobby.getRedTeam(),
-        blueTeam: lobby.getBlueTeam(),
-        isGameInProgress: lobby.getIsGameInProgress(),
-      };
+      let res = lobby.getLobby();
 
       io.emit(UPDATE_LOBBY, res);
     }
