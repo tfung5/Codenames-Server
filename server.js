@@ -121,23 +121,33 @@ io.on("connection", (socket) => {
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
-    lobby.insertPlayerIntoSlot(player, team, index);
-    emitUpdateLobbyAll();
+    if (lobby && team && index) {
+      lobby.insertPlayerIntoSlot(player, team, index);
+      emitUpdateLobbyAll();
+    }
   });
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
-    let newGame = new Game(lobby.getId(), lobby.getPlayerList()); // Create new Game
-    newGame.startGame(); // Generate the game info and board
-    gameList[lobby.getId()] = newGame; // Add game by id to list of games
-    io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
+    if (lobby) {
+      let newGame = new Game(lobby.getId(), lobby.getPlayerList()); // Create new Game
+      newGame.startGame(); // Generate the game info and board
+      gameList[lobby.getId()] = newGame; // Add game by id to list of games
+      io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
+    }
   });
 
   // To start the process for each player / Upon pressing the 'Join Game' button
   socket.on(JOIN_GAME, () => {
-    game = gameList[lobby.getId()]; // Get the corresponding Game object for the Player's Lobby
-    player = game.getPlayerById(socket.id); // Get their latest Player object
-    joinRoom(lobby, player); // Join room based on lobby id and player role
+    if (lobby) {
+      game = gameList[lobby.getId()]; // Get the corresponding Game object for the Player's Lobby
+    }
+    if (game) {
+      player = game.getPlayerById(socket.id); // Get their latest Player object
+    }
+    if (lobby && player) {
+      joinRoom(lobby, player); // Join room based on lobby id and player role
+    }
   });
 
   // Upon loading the GameScreen
@@ -156,53 +166,69 @@ io.on("connection", (socket) => {
 
   // Handle LOAD_PRESET_BOARD
   socket.on(LOAD_PRESET_BOARD, () => {
-    game.loadPresetBoard();
-    emitUpdateGameAll();
+    if (game) {
+      game.loadPresetBoard();
+      emitUpdateGameAll();
+    }
   });
 
   // Upon pressing a card
   socket.on(CHOOSE_CARD, (payload) => {
-    let res = game.chooseCard(payload.row, payload.col);
-    emitUpdateGameAll();
-    io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
+    if (game) {
+      let res = game.chooseCard(payload.row, payload.col);
+      io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
+      emitUpdateGameAll();
+    }
   });
 
   // Upon anyone pressing the 'End Turn' button
   socket.on(END_TURN, () => {
-    game.endTurnFromPlayer(socket.id);
-    emitUpdateGameAll();
+    if (game) {
+      game.endTurnFromPlayer(socket.id);
+      emitUpdateGameAll();
+    }
   });
 
   // Upon anyone pressing the 'Restart Game' button
   socket.on(RESTART_GAME, () => {
-    game.restartGame();
-    emitUpdateGameAll();
+    if (game) {
+      game.restartGame();
+      emitUpdateGameAll();
+    }
   });
 
   // Upon pressing the 'Leave Game' button
   socket.on(LEAVE_GAME, () => {
-    game.handleLeaveGame(socket.id); // Handle this player leaving the game
-    leaveAllRooms();
-    emitUpdateGameAll();
+    if (game) {
+      game.handleLeaveGame(socket.id); // Handle this player leaving the game
+      leaveAllRooms();
+      emitUpdateGameAll();
+    }
   });
 
   // Upon anyone pressing the 'Reset Lobby' button
   socket.on(RESET_LOBBY, () => {
-    game.resetLobby();
-    emitUpdateLobbyAll();
+    if (game) {
+      game.resetLobby();
+      emitUpdateLobbyAll();
+    }
   });
 
   // Handle CHAT_MESSAGE
   socket.on(CHAT_MESSAGE, (payload) => {
     let chatHistory = [];
-    game.saveChatMessages(payload);
-    chatHistory = game.getChatMessages();
-    io.emit(CHAT_MESSAGE, payload);
+    if (game) {
+      game.saveChatMessages(payload);
+      chatHistory = game.getChatMessages();
+      io.emit(CHAT_MESSAGE, payload);
+    }
   });
 
   socket.on(SAVE_LATEST_TIME, (payload) => {
-    game.setTimeOfLatestMessage(payload);
-    emitUpdateGameAll();
+    if (game) {
+      game.setTimeOfLatestMessage(payload);
+      emitUpdateGameAll();
+    }
   });
 
   /**
@@ -211,8 +237,10 @@ io.on("connection", (socket) => {
    * { word: "string", number: int }
    */
   socket.on(SET_CLUE, (payload) => {
-    game.setClue(payload);
-    emitUpdateGameAll();
+    if (game) {
+      game.setClue(payload);
+      emitUpdateGameAll();
+    }
   });
 
   // Upon loading the GameScreen
@@ -222,47 +250,60 @@ io.on("connection", (socket) => {
 
   //Emit CHAT_MESSAGE -> send current messages
   const emitChatMessages = () => {
-    let chatHistory = game.getChatMessages();
-    // Send to the player on this socket the corresponding game information based on their role
-    io.to(socket.id).emit(GET_MESSAGES, chatHistory);
+    if (game) {
+      let chatHistory = game.getChatMessages();
+      // Send to the player on this socket the corresponding game information based on their role
+      io.to(socket.id).emit(GET_MESSAGES, chatHistory);
+    }
   };
 
   // Emit UPDATE_GAME
   const emitUpdateGame = () => {
-    let res = game.getGameById(socket.id);
-    // Send to the player on this socket the corresponding game information based on their role
-    io.to(socket.id).emit(UPDATE_GAME, res);
+    if (game) {
+      let res = game.getGameById(socket.id);
+      // Send to the player on this socket the corresponding game information based on their role
+      io.to(socket.id).emit(UPDATE_GAME, res);
+    }
   };
 
   // Emit UPDATE_GAME to all
   const emitUpdateGameAll = () => {
-    io.to("lobby-spymasters").emit(UPDATE_GAME, game.getGameByRole(SPYMASTER));
-    io.to("lobby-fieldOperatives").emit(
-      UPDATE_GAME,
-      game.getGameByRole(FIELD_OPERATIVE)
-    );
+    if (game) {
+      io.to("lobby-spymasters").emit(
+        UPDATE_GAME,
+        game.getGameByRole(SPYMASTER)
+      );
+      io.to("lobby-fieldOperatives").emit(
+        UPDATE_GAME,
+        game.getGameByRole(FIELD_OPERATIVE)
+      );
+    }
   };
 
   // Emit UPDATE_LOBBY
   const emitUpdateLobby = () => {
-    let res = {
-      redTeam: lobby.getRedTeam(),
-      blueTeam: lobby.getBlueTeam(),
-      isGameInProgress: lobby.getIsGameInProgress(),
-    };
+    if (lobby) {
+      let res = {
+        redTeam: lobby.getRedTeam(),
+        blueTeam: lobby.getBlueTeam(),
+        isGameInProgress: lobby.getIsGameInProgress(),
+      };
 
-    io.to(socket.id).emit(UPDATE_LOBBY, res);
+      io.to(socket.id).emit(UPDATE_LOBBY, res);
+    }
   };
 
   // Emit UPDATE_LOBBY to all
   const emitUpdateLobbyAll = () => {
-    let res = {
-      redTeam: lobby.getRedTeam(),
-      blueTeam: lobby.getBlueTeam(),
-      isGameInProgress: lobby.getIsGameInProgress(),
-    };
+    if (lobby) {
+      let res = {
+        redTeam: lobby.getRedTeam(),
+        blueTeam: lobby.getBlueTeam(),
+        isGameInProgress: lobby.getIsGameInProgress(),
+      };
 
-    io.emit(UPDATE_LOBBY, res);
+      io.emit(UPDATE_LOBBY, res);
+    }
   };
 
   // Emit UPDATE_LOBBY_LIST
