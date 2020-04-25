@@ -86,7 +86,7 @@ const seedLobbyList = (lobbyList) => {
  * Emit action payload
  */
 io.on("connection", (socket) => {
-  console.log("A user connected :D");
+  console.log("A user connected:", socket.id);
 
   // Upon entering the HomeScreen
   let player = new Player(socket.id); // Create Player object
@@ -245,22 +245,27 @@ io.on("connection", (socket) => {
 
   // Upon pressing the 'Leave Game' button
   socket.on(LEAVE_GAME, () => {
-    handleLeaveGame();
+    handleLeave();
   });
 
   // Upon disconnecting
   socket.on("disconnect", () => {
-    handleLeaveGame();
+    handleLeave();
   });
 
-  // Handle this player leaving the game
-  const handleLeaveGame = () => {
-    if (lobby && game) {
+  // Handle this player leaving the lobby or game
+  const handleLeave = () => {
+    if (lobby) {
       lobby.removePlayer(socket.id);
+      emitUpdateLobbyAll();
+      emitUpdateLobbyListAll();
+    }
+    if (game) {
       game.removePlayer(socket.id);
-      leaveAllRooms();
       emitUpdateGameAll();
     }
+    leaveAllRooms();
+    // TODO: Check if lobby and game should be removed
   };
 
   //Emit CHAT_MESSAGE -> send current messages
@@ -383,7 +388,7 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log("Server running on port:" + port);
-  seedLobbyList(lobbyList);
+  // seedLobbyList(lobbyList);
 });
 server.on("Error", (err) => onError(err, port));
 server.on("Listening", () => onListening(server));
