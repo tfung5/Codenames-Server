@@ -309,7 +309,7 @@ io.on("connection", (socket) => {
   };
 
   // Emit UPDATE_PLAYER_INFO
-  const emitUpdatePlayerInfo = (player) => {
+  const emitUpdatePlayerInfo = () => {
     if (player) {
       io.to(socket.id).emit(UPDATE_PLAYER_INFO, player.getPlayer());
     } else {
