@@ -102,20 +102,18 @@ io.on("connection", (socket) => {
   socket.on(CREATE_LOBBY, (payload) => {
     const { name } = payload;
     player.setName(name); // Set Player name
-
     lobby = new Lobby(nextLobbyNumber++); // Create new lobby and increment nextLobbyNumber
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
+    joinRoomForLobby(lobby); // Join appropriate room for lobby
     emitUpdateLobbyListAll(); // Update all subscribed sockets that a new Lobby has been added to the list
   });
 
   // Upon pressing the 'Join Lobby' button
   socket.on(JOIN_LOBBY, (payload) => {
     const { name, lobbyId } = payload;
-
     player.setName(name); // Set Player name
     lobby = lobbyList[lobbyId]; // Set Lobby
-
-    joinRoomForLobby(lobby);
+    joinRoomForLobby(lobby); // Join appropriate room for lobby
   });
 
   // Upon loading the LobbyScreen
