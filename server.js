@@ -129,7 +129,7 @@ io.on("connection", (socket) => {
       let newGame = new Game(lobby.getId(), lobby.getPlayerList()); // Create new Game
       newGame.startGame(); // Generate the game info and board
       gameList[lobby.getId()] = newGame; // Add game by id to list of games
-      io.emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
+      io.to("lobby-" + lobby.getId()).emit(REQUEST_INDIVIDUAL_START_GAME); // Request that each player start the game themselves
     }
   });
 
@@ -170,10 +170,10 @@ io.on("connection", (socket) => {
 
   // Upon pressing a card
   socket.on(CHOOSE_CARD, (payload) => {
-    if (game) {
+    if (lobby && game) {
       let res = game.chooseCard(payload.row, payload.col);
       emitUpdateGameAll();
-      io.emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
+      io.to("lobby-" + lobby.getId()).emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
     }
   });
 
@@ -204,10 +204,10 @@ io.on("connection", (socket) => {
   // Handle CHAT_MESSAGE
   socket.on(CHAT_MESSAGE, (payload) => {
     let chatHistory = [];
-    if (game) {
+    if (lobby && game) {
       game.saveChatMessages(payload);
       chatHistory = game.getChatMessages();
-      io.emit(CHAT_MESSAGE, payload);
+      io.to("lobby-" + lobby.getId()).emit(CHAT_MESSAGE, payload);
     }
   });
 
