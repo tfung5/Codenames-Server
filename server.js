@@ -130,6 +130,7 @@ io.on("connection", (socket) => {
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
     if (lobby) {
+      lobby.setIsGameInProgress(true); // Mark this lobby's game as started
       let newGame = new Game(lobby.getId(), lobby.getPlayerList()); // Create new Game
       newGame.startGame(); // Generate the game info and board
       gameList[lobby.getId()] = newGame; // Add game by id to list of games
