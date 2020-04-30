@@ -105,8 +105,12 @@ io.on("connection", (socket) => {
     const { name, lobbyId } = payload;
     player.setName(name); // Set Player name
     lobby = lobbyList[lobbyId]; // Set Lobby
-    lobby.addPlayerToPlayersNotOnTeam(player); // Add player to playersNotOnTeam
-    joinRoomForLobby(lobby); // Join appropriate room for lobby
+    if (lobby.getPlayerCount() < lobby.getMaxPlayers()) {
+      lobby.addPlayerToPlayersNotOnTeam(player); // Add player to playersNotOnTeam
+      joinRoomForLobby(lobby); // Join appropriate room for lobby
+    } else {
+      // TODO: Send error message
+    }
   });
 
   // Upon loading the LobbyScreen

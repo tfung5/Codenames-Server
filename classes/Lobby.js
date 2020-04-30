@@ -34,6 +34,13 @@ class Lobby {
     }
   };
 
+  getPlayerCount = () => {
+    return (
+      Object.keys(this.playerList).length +
+      Object.keys(this.playersNotOnTeam).length
+    );
+  };
+
   getId = () => {
     try {
       return this.id;
@@ -147,6 +154,7 @@ class Lobby {
       return {
         id: this.getId(),
         name: this.getName(),
+        playerCount: this.getPlayerCount(),
         maxPlayers: this.getMaxPlayers(),
         redTeam: this.getRedTeam(),
         blueTeam: this.getBlueTeam(),
