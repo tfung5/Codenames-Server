@@ -263,11 +263,18 @@ io.on("connection", (socket) => {
     if (lobby) {
       lobby.removePlayer(socket.id);
       lobby.decrementPlayerCount();
+      if (lobby.getPlayerCount() <= 0) {
+        delete lobbyList[lobby.getId()];
+        delete lobby;
+      }
       emitUpdateLobbyAll();
       emitUpdateLobbyListAll();
     }
     if (game) {
       game.removePlayer(socket.id);
+      if (game.getPlayerCount() <= 0) {
+        delete game;
+      }
       emitUpdateGameAll();
     }
     leaveAllRooms();
