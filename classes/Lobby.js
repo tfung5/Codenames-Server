@@ -15,6 +15,23 @@ class Lobby {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
+    this.playersNotOnTeam = {};
+  };
+
+  getPlayersNotOnTeam = () => {
+    return this.playersNotOnTeam;
+  };
+
+  addPlayerToPlayersNotOnTeam = (player) => {
+    if (player && !this.playersNotOnTeam[player.getId()]) {
+      this.playersNotOnTeam[player.getId()] = player;
+    }
+  };
+
+  removePlayerFromPlayersNotOnTeam = (player) => {
+    if (player && this.playersNotOnTeam[player.getId()]) {
+      delete this.playersNotOnTeam[player.getId()];
+    }
   };
 
   getId = () => {
@@ -134,6 +151,7 @@ class Lobby {
         redTeam: this.getRedTeam(),
         blueTeam: this.getBlueTeam(),
         isGameInProgress: this.getIsGameInProgress(),
+        playersNotOnTeam: this.getPlayersNotOnTeam(),
       };
     } catch (err) {
       console.log(err);

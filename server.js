@@ -105,6 +105,7 @@ io.on("connection", (socket) => {
     const { name, lobbyId } = payload;
     player.setName(name); // Set Player name
     lobby = lobbyList[lobbyId]; // Set Lobby
+    lobby.addPlayerToPlayersNotOnTeam(player); // Add player to playersNotOnTeam
     joinRoomForLobby(lobby); // Join appropriate room for lobby
   });
 
@@ -116,8 +117,9 @@ io.on("connection", (socket) => {
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
-    if (lobby && team && index >= 0) {
+    if (lobby && player && team && index >= 0) {
       lobby.insertPlayerIntoSlot(player, team, index);
+      lobby.removePlayerFromPlayersNotOnTeam(player);
       emitUpdateLobbyAll();
     }
   });
