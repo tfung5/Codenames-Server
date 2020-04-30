@@ -56,6 +56,10 @@ class Game {
     console.log("Board reset completed.");
   };
 
+  getPlayerCount = () => {
+    return Object.keys(this.playerList).length;
+  };
+
   setPlayerList = (playerList) => {
     this.playerList = playerList;
   };

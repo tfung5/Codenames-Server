@@ -95,17 +95,29 @@ io.on("connection", (socket) => {
     const { name } = payload;
     player.setName(name); // Set Player name
     lobby = new Lobby(name); // Create new lobby
+    lobby.incrementPlayerCount(); // Count the lobby's creator
     lobbyList[lobby.getId()] = lobby; // Add lobby by id to list of lobbies
     joinRoomForLobby(lobby); // Join appropriate room for lobby
     emitUpdateLobbyListAll(); // Update all subscribed sockets that a new Lobby has been added to the list
   });
 
   // Upon pressing the 'Join Lobby' button
-  socket.on(JOIN_LOBBY, (payload) => {
+  socket.on(JOIN_LOBBY, (payload, callback) => {
     const { name, lobbyId } = payload;
-    player.setName(name); // Set Player name
+    if (player) {
+      player.setName(name); // Set Player name
+    }
     lobby = lobbyList[lobbyId]; // Set Lobby
-    joinRoomForLobby(lobby); // Join appropriate room for lobby
+    if (lobby) {
+      const isSpaceAvailable = lobby.getPlayerCount() < lobby.getMaxPlayers();
+
+      callback(isSpaceAvailable);
+      if (isSpaceAvailable) {
+        lobby.addPlayerToPlayersNotOnTeam(player); // Add player to playersNotOnTeam
+        lobby.incrementPlayerCount();
+        joinRoomForLobby(lobby); // Join appropriate room for lobby
+      }
+    }
   });
 
   // Upon loading the LobbyScreen
@@ -116,8 +128,9 @@ io.on("connection", (socket) => {
   // Upon joining a slot
   socket.on(JOIN_SLOT, (payload) => {
     const { team, index } = payload;
-    if (lobby && team && index >= 0) {
+    if (lobby && player && team && index >= 0) {
       lobby.insertPlayerIntoSlot(player, team, index);
+      lobby.removePlayerFromPlayersNotOnTeam(player);
       emitUpdateLobbyAll();
     }
   });
@@ -249,11 +262,19 @@ io.on("connection", (socket) => {
   const handleLeave = () => {
     if (lobby) {
       lobby.removePlayer(socket.id);
+      lobby.decrementPlayerCount();
+      if (lobby.getPlayerCount() <= 0) {
+        delete lobbyList[lobby.getId()];
+        delete lobby;
+      }
       emitUpdateLobbyAll();
       emitUpdateLobbyListAll();
     }
     if (game) {
       game.removePlayer(socket.id);
+      if (game.getPlayerCount() <= 0) {
+        delete game;
+      }
       emitUpdateGameAll();
     }
     leaveAllRooms();
