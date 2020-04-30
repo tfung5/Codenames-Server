@@ -16,6 +16,7 @@ class Lobby {
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
     this.playersNotOnTeam = {};
+    this.playerCount = 0;
   };
 
   getPlayersNotOnTeam = () => {
@@ -35,10 +36,15 @@ class Lobby {
   };
 
   getPlayerCount = () => {
-    return (
-      Object.keys(this.playerList).length +
-      Object.keys(this.playersNotOnTeam).length
-    );
+    return this.playerCount;
+  };
+
+  incrementPlayerCount = () => {
+    this.playerCount++;
+  };
+
+  decrementPlayerCount = () => {
+    this.playerCount--;
   };
 
   getId = () => {
