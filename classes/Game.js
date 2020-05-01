@@ -290,6 +290,7 @@ class Game {
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
       hasClueBeenSet: this.hasClueBeenSet,
+      playerList: this.playerList
     };
   };
 
@@ -313,6 +314,7 @@ class Game {
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
         hasClueBeenSet: this.hasClueBeenSet,
+        playerList: this.playerList
       };
     }
   };
