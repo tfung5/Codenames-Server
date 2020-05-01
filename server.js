@@ -273,6 +273,7 @@ io.on("connection", (socket) => {
     if (game) {
       game.removePlayer(socket.id);
       if (game.getPlayerCount() <= 0) {
+        delete gameList[game.getId()];
         delete game;
       }
       emitUpdateGameAll();
