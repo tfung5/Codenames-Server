@@ -394,6 +394,7 @@ io.on("connection", (socket) => {
     }
 
     socket.join(room);
+    emitUpdateGameAll();
   };
 
   const leaveAllRooms = () => {
