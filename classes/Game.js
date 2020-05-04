@@ -467,7 +467,7 @@ class Game {
     this.isGuessCorrect = false;
     this.clue = clue;
     this.guessCounter = clue.number + 1;
-    //this.hasClueBeenSet = true;
+    this.hasClueBeenSet = true;
   };
 }
 
