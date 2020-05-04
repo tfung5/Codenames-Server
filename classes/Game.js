@@ -291,10 +291,7 @@ class Game {
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
       hasClueBeenSet: this.hasClueBeenSet,
-<<<<<<< HEAD
       playerList: this.playerList,
-=======
->>>>>>> 93976e4948cf515527407666a6eb235832dc1877
       isGuessCorrect: this.isGuessCorrect,
     };
   };
@@ -319,10 +316,7 @@ class Game {
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
         hasClueBeenSet: this.hasClueBeenSet,
-<<<<<<< HEAD
         playerList: this.playerList,
-=======
->>>>>>> 93976e4948cf515527407666a6eb235832dc1877
         isGuessCorrect: this.isGuessCorrect,
       };
     }
