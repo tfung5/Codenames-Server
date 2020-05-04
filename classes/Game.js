@@ -52,6 +52,7 @@ class Game {
     this.chatHistory = [];
     this.timeOfLatestMessage = null;
     this.hasClueBeenSet = false;
+    this.isGuessCorrect = false;
 
     console.log("Board reset completed.");
   };
@@ -286,6 +287,7 @@ class Game {
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
       hasClueBeenSet: this.hasClueBeenSet,
+      isGuessCorrect: this.isGuessCorrect,
     };
   };
 
@@ -309,6 +311,7 @@ class Game {
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
         hasClueBeenSet: this.hasClueBeenSet,
+        isGuessCorrect: this.isGuessCorrect,
       };
     }
   };
@@ -443,6 +446,7 @@ class Game {
 
     this.clue = {}; // Clear the current clue
     this.hasClueBeenSet = false; // Resets hasClueBeenSet
+    this.isGuessCorrect = false;
   };
 
   /**
@@ -452,7 +456,7 @@ class Game {
   setClue = (clue) => {
     this.clue = clue;
     this.guessCounter = clue.number + 1;
-    this.hasClueBeenSet = true;
+    //this.hasClueBeenSet = true;
   };
 }
 

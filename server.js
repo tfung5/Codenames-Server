@@ -65,6 +65,8 @@ const {
   UPDATE_LOBBY_LIST,
   UPDATE_NOTIFICATION,
   UPDATE_PLAYER_INFO,
+  LEAVE_SLOT,
+  READY_CHANGE,
 } = require("./constants/Actions");
 const { FIELD_OPERATIVE, SPYMASTER } = require("./constants/Roles");
 
@@ -120,7 +122,19 @@ io.on("connection", (socket) => {
       lobby.insertPlayerIntoSlot(player, team, index);
       emitUpdateLobbyAll();
     }
+    console.log(lobby.getRedReadys());
+    console.log(lobby.getBlueReadys());
   });
+
+  socket.on(READY_CHANGE, (payload) => {
+    const{team, index} = payload;
+    if(lobby){
+      lobby.changeReady(team, index);
+      emitUpdateLobbyAll();
+    }
+    console.log(lobby.getRedReadys());
+    console.log(lobby.getBlueReadys());
+  })
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
@@ -243,6 +257,11 @@ io.on("connection", (socket) => {
   // Upon disconnecting
   socket.on("disconnect", () => {
     handleLeave();
+  });
+
+  socket.on(LEAVE_SLOT, () => {
+      lobby.removePlayer(socket.id);
+      emitUpdateLobbyAll();
   });
 
   // Handle this player leaving the lobby or game

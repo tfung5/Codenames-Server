@@ -15,6 +15,8 @@ class Lobby {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
+    this.redReadys = new Array(4).fill(null);
+    this.blueReadys = new Array(4).fill(null);
   };
 
   getId = () => {
@@ -65,11 +67,21 @@ class Lobby {
     return this.blueTeam;
   };
 
+  getRedReadys = () => {
+    return this.redReadys;
+  }
+
+  getBlueReadys = () => {
+    return this.blueReadys;
+  }
+
   insertPlayerIntoSlot = (player, team, index) => {
     this.removePlayer(player.getId()); // Prevent duplicate players
     this.setPlayerInfo(player, team, index);
     this.addPlayerToTeam(player, team, index);
     this.addPlayerToPlayerList(player);
+    console.log(this.getRedReadys());
+    console.log(this.getBlueReadys());
   };
 
   setPlayerInfo = (player, team, index) => {
@@ -89,17 +101,20 @@ class Lobby {
   addPlayerToTeam = (player, team, index) => {
     if (team === RED) {
       this.redTeam[index] = player;
+      this.redReadys[index] = false;
     } else {
       this.blueTeam[index] = player;
+      this.blueReadys[index] = false;
     }
   };
 
-  removePlayerFromTeam = (targetId, team) => {
+  removePlayerFromTeam = (targetId, team, readys) => {
     for (let i in team) {
       const player = team[i];
 
       if (player && player.getId() === targetId) {
-        delete team[i];
+        readys[i] = null;
+        team[i] = null;
       }
     }
   };
@@ -120,10 +135,24 @@ class Lobby {
   };
 
   removePlayer = (targetId) => {
-    this.removePlayerFromTeam(targetId, this.redTeam);
-    this.removePlayerFromTeam(targetId, this.blueTeam);
+    this.removePlayerFromTeam(targetId, this.redTeam, this.redReadys);
+    this.removePlayerFromTeam(targetId, this.blueTeam, this.blueReadys);
     this.removePlayerFromPlayerList(targetId);
   };
+
+  removePlayerLobby = (targetId) => {
+    this.removePlayerFromTeam(targetId, this.redTeam, this.redReadys);
+    this.removePlayerFromTeam(targetId, this.blueTeam, this.blueReadys);
+  }
+
+  changeReady = (team, index) => {
+    if(team === "RED"){
+      this.redReadys[index] = !this.redReadys[index];
+    }
+    if(team === "BLUE"){
+      this.blueReadys[index] = !this.blueReadys[index];
+    }
+  }
 
   getLobby = () => {
     try {
@@ -134,6 +163,8 @@ class Lobby {
         redTeam: this.getRedTeam(),
         blueTeam: this.getBlueTeam(),
         isGameInProgress: this.getIsGameInProgress(),
+        redReadys: this.getRedReadys(),
+        blueReadys: this.getBlueReadys(),
       };
     } catch (err) {
       console.log(err);
