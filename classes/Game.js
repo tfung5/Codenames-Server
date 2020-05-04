@@ -52,6 +52,7 @@ class Game {
     this.chatHistory = [];
     this.timeOfLatestMessage = null;
     this.hasClueBeenSet = false;
+    this.isGuessCorrect = false;
 
     console.log("Board reset completed.");
   };
@@ -290,7 +291,11 @@ class Game {
       board: this.getBoardByRole(role),
       timeOfLatestMessage: this.timeOfLatestMessage,
       hasClueBeenSet: this.hasClueBeenSet,
-      playerList: this.playerList
+<<<<<<< HEAD
+      playerList: this.playerList,
+=======
+>>>>>>> 93976e4948cf515527407666a6eb235832dc1877
+      isGuessCorrect: this.isGuessCorrect,
     };
   };
 
@@ -314,7 +319,11 @@ class Game {
         board: this.getBoardByRole(player.getRole()),
         timeOfLatestMessage: this.timeOfLatestMessage,
         hasClueBeenSet: this.hasClueBeenSet,
-        playerList: this.playerList
+<<<<<<< HEAD
+        playerList: this.playerList,
+=======
+>>>>>>> 93976e4948cf515527407666a6eb235832dc1877
+        isGuessCorrect: this.isGuessCorrect,
       };
     }
   };
@@ -447,10 +456,13 @@ class Game {
    */
   endTurn = () => {
     // Set the currentTeam to the other team
+    this.hasClueBeenSet = false;
+    this.isGuessCorrect = false;
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
 
     this.clue = {}; // Clear the current clue
     this.hasClueBeenSet = false; // Resets hasClueBeenSet
+    this.isGuessCorrect = false;
   };
 
   /**
@@ -458,9 +470,10 @@ class Game {
    * @param {Object} containing a word and a number
    */
   setClue = (clue) => {
+    this.isGuessCorrect = false;
     this.clue = clue;
     this.guessCounter = clue.number + 1;
-    this.hasClueBeenSet = true;
+    //this.hasClueBeenSet = true;
   };
 }
 
