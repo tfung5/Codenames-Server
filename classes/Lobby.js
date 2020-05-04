@@ -17,6 +17,8 @@ class Lobby {
     this.playerList = {};
     this.playersNotOnTeam = {};
     this.playerCount = 0;
+    this.redReadys = new Array(4).fill(null);
+    this.blueReadys = new Array(4).fill(null);
   };
 
   getPlayersNotOnTeam = () => {
@@ -95,6 +97,14 @@ class Lobby {
     return this.blueTeam;
   };
 
+  getRedReadys = () => {
+    return this.redReadys;
+  }
+
+  getBlueReadys = () => {
+    return this.blueReadys;
+  }
+
   insertPlayerIntoSlot = (player, team, index) => {
     this.removePlayer(player.getId()); // Prevent duplicate players
     this.setPlayerInfo(player, team, index);
@@ -119,17 +129,20 @@ class Lobby {
   addPlayerToTeam = (player, team, index) => {
     if (team === RED) {
       this.redTeam[index] = player;
+      this.redReadys[index] = false;
     } else {
       this.blueTeam[index] = player;
+      this.blueReadys[index] = false;
     }
   };
 
-  removePlayerFromTeam = (targetId, team) => {
+  removePlayerFromTeam = (targetId, team, readys) => {
     for (let i in team) {
       const player = team[i];
 
       if (player && player.getId() === targetId) {
-        delete team[i];
+        readys[i] = null;
+        team[i] = null;
       }
     }
   };
@@ -150,10 +163,24 @@ class Lobby {
   };
 
   removePlayer = (targetId) => {
-    this.removePlayerFromTeam(targetId, this.redTeam);
-    this.removePlayerFromTeam(targetId, this.blueTeam);
+    this.removePlayerFromTeam(targetId, this.redTeam, this.redReadys);
+    this.removePlayerFromTeam(targetId, this.blueTeam, this.blueReadys);
     this.removePlayerFromPlayerList(targetId);
   };
+
+  removePlayerLobby = (targetId) => {
+    this.removePlayerFromTeam(targetId, this.redTeam, this.redReadys);
+    this.removePlayerFromTeam(targetId, this.blueTeam, this.blueReadys);
+  }
+
+  changeReady = (team, index) => {
+    if(team === "RED"){
+      this.redReadys[index] = !this.redReadys[index];
+    }
+    if(team === "BLUE"){
+      this.blueReadys[index] = !this.blueReadys[index];
+    }
+  }
 
   getLobby = () => {
     try {
@@ -166,6 +193,8 @@ class Lobby {
         blueTeam: this.getBlueTeam(),
         isGameInProgress: this.getIsGameInProgress(),
         playersNotOnTeam: this.getPlayersNotOnTeam(),
+        redReadys: this.getRedReadys(),
+        blueReadys: this.getBlueReadys(),
       };
     } catch (err) {
       console.log(err);
