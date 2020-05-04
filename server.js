@@ -135,6 +135,8 @@ io.on("connection", (socket) => {
       lobby.removePlayerFromPlayersNotOnTeam(player);
       emitUpdateLobbyAll();
     }
+    console.log(lobby.getRedReadys());
+    console.log(lobby.getBlueReadys());
   });
 
   socket.on(READY_CHANGE, (payload) => {
@@ -143,6 +145,11 @@ io.on("connection", (socket) => {
       lobby.changeReady(team, index);
       emitUpdateLobbyAll();
     }
+<<<<<<< HEAD
+=======
+    console.log(lobby.getRedReadys());
+    console.log(lobby.getBlueReadys());
+>>>>>>> 93976e4948cf515527407666a6eb235832dc1877
   })
 
   // Upon *anyone* pressing the 'Start Game' button

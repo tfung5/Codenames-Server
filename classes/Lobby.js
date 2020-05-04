@@ -15,6 +15,7 @@ class Lobby {
     this.redTeam = new Array(4).fill(null);
     this.blueTeam = new Array(4).fill(null);
     this.playerList = {};
+<<<<<<< HEAD
     this.playersNotOnTeam = {};
     this.playerCount = 0;
     this.redReadys = new Array(4).fill(null);
@@ -47,6 +48,10 @@ class Lobby {
 
   decrementPlayerCount = () => {
     this.playerCount--;
+=======
+    this.redReadys = new Array(4).fill(null);
+    this.blueReadys = new Array(4).fill(null);
+>>>>>>> 93976e4948cf515527407666a6eb235832dc1877
   };
 
   getId = () => {
@@ -110,6 +115,8 @@ class Lobby {
     this.setPlayerInfo(player, team, index);
     this.addPlayerToTeam(player, team, index);
     this.addPlayerToPlayerList(player);
+    console.log(this.getRedReadys());
+    console.log(this.getBlueReadys());
   };
 
   setPlayerInfo = (player, team, index) => {
@@ -192,7 +199,10 @@ class Lobby {
         redTeam: this.getRedTeam(),
         blueTeam: this.getBlueTeam(),
         isGameInProgress: this.getIsGameInProgress(),
+<<<<<<< HEAD
         playersNotOnTeam: this.getPlayersNotOnTeam(),
+=======
+>>>>>>> 93976e4948cf515527407666a6eb235832dc1877
         redReadys: this.getRedReadys(),
         blueReadys: this.getBlueReadys(),
       };
