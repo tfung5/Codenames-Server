@@ -140,12 +140,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on(READY_CHANGE, (payload) => {
-    const{team, index} = payload;
-    if(lobby){
+    const { team, index } = payload;
+    if (lobby) {
       lobby.changeReady(team, index);
       emitUpdateLobbyAll();
     }
-  })
+  });
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
@@ -271,8 +271,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on(LEAVE_SLOT, () => {
-      lobby.removePlayer(socket.id);
-      emitUpdateLobbyAll();
+    lobby.removePlayer(socket.id);
+    emitUpdateLobbyAll();
   });
 
   // Handle this player leaving the lobby or game

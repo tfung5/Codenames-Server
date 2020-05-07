@@ -371,7 +371,7 @@ class Game {
     } else if (this.spymasterBoard[row][col].color === "BLACK") {
       this.blackCardCounter--;
     }
-    if (this.guessCounter > 0){
+    if (this.guessCounter > 0) {
       this.guessCounter--;
     }
   };
