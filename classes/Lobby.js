@@ -99,11 +99,11 @@ class Lobby {
 
   getRedReadys = () => {
     return this.redReadys;
-  }
+  };
 
   getBlueReadys = () => {
     return this.blueReadys;
-  }
+  };
 
   insertPlayerIntoSlot = (player, team, index) => {
     this.removePlayer(player.getId()); // Prevent duplicate players
@@ -173,16 +173,16 @@ class Lobby {
   removePlayerLobby = (targetId) => {
     this.removePlayerFromTeam(targetId, this.redTeam, this.redReadys);
     this.removePlayerFromTeam(targetId, this.blueTeam, this.blueReadys);
-  }
+  };
 
   changeReady = (team, index) => {
-    if(team === "RED"){
+    if (team === "RED") {
       this.redReadys[index] = !this.redReadys[index];
     }
-    if(team === "BLUE"){
+    if (team === "BLUE") {
       this.blueReadys[index] = !this.blueReadys[index];
     }
-  }
+  };
 
   getLobby = () => {
     try {

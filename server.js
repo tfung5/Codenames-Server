@@ -140,12 +140,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on(READY_CHANGE, (payload) => {
-    const{team, index} = payload;
-    if(lobby){
+    const { team, index } = payload;
+    if (lobby) {
       lobby.changeReady(team, index);
       emitUpdateLobbyAll();
     }
-  })
+  });
 
   // Upon *anyone* pressing the 'Start Game' button
   socket.on(START_GAME, () => {
@@ -196,7 +196,7 @@ io.on("connection", (socket) => {
   // Upon pressing a card
   socket.on(CHOOSE_CARD, (payload) => {
     if (lobby && game) {
-      let res = game.chooseCard(payload.row, payload.col);
+      let res = game.chooseCard(payload.row, payload.col, socket.id);
       emitUpdateGameAll();
       io.to("lobby-" + lobby.getId()).emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
     }
@@ -271,8 +271,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on(LEAVE_SLOT, () => {
-      lobby.removePlayer(socket.id);
-      emitUpdateLobbyAll();
+    lobby.removePlayer(socket.id);
+    emitUpdateLobbyAll();
   });
 
   // Handle this player leaving the lobby or game
