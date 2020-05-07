@@ -196,7 +196,7 @@ io.on("connection", (socket) => {
   // Upon pressing a card
   socket.on(CHOOSE_CARD, (payload) => {
     if (lobby && game) {
-      let res = game.chooseCard(payload.row, payload.col);
+      let res = game.chooseCard(payload.row, payload.col, socket.id);
       emitUpdateGameAll();
       io.to("lobby-" + lobby.getId()).emit(CHOOSE_CARD_RESPONSE, res); // Sends the answer back to all clients whether the guess was correct or not
     }

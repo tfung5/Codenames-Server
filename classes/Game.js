@@ -348,10 +348,15 @@ class Game {
    * A player chooses a card to flip over
    * @param {int} The row of a given position
    * @param {int} The column of a given position
+   * @param {int} The socket ID of the player who chose the card
    * @return {boolean} Whether or not the guess was correct
    */
-  chooseCard = (row, col) => {
+  chooseCard = (row, col, id) => {
     let chooserTeam = this.currentTeam; // Temporarily saves the current team
+    let player = this.getPlayerById(id);
+    let playerName = player ? player.getName() : null;
+    let card = this.fieldOperativeBoard[row][col];
+    let cardWord = card ? card.word : "";
 
     this.markChosen(row, col);
     let trueColor = this.revealColor(row, col);
@@ -359,7 +364,13 @@ class Game {
     this.checkWinConditions();
     this.checkEndOfTurn(row, col);
 
-    return trueColor === chooserTeam;
+    let res = {
+      isGuessCorrect: trueColor === chooserTeam,
+      guesser: playerName,
+      guessedWord: cardWord,
+    };
+
+    return res;
   };
 
   // Just updates the number of cards left for each team and number of guesses remaining
