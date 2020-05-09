@@ -110,8 +110,6 @@ class Lobby {
     this.setPlayerInfo(player, team, index);
     this.addPlayerToTeam(player, team, index);
     this.addPlayerToPlayerList(player);
-    console.log(this.getRedReadys());
-    console.log(this.getBlueReadys());
   };
 
   setPlayerInfo = (player, team, index) => {

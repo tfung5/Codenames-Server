@@ -461,8 +461,6 @@ class Game {
    */
   endTurn = () => {
     // Set the currentTeam to the other team
-    this.hasClueBeenSet = false;
-    this.isGuessCorrect = false;
     this.currentTeam = this.currentTeam === RED ? BLUE : RED;
 
     this.clue = {}; // Clear the current clue
