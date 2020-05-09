@@ -135,8 +135,6 @@ io.on("connection", (socket) => {
       lobby.removePlayerFromPlayersNotOnTeam(player);
       emitUpdateLobbyAll();
     }
-    console.log(lobby.getRedReadys());
-    console.log(lobby.getBlueReadys());
   });
 
   socket.on(READY_CHANGE, (payload) => {
